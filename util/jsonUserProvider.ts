@@ -10,6 +10,6 @@ const usersData = new SharedArray('users', () => {
   return JSON.parse(open('./users.json')).users;
 });
 
-export const getRandomUser = (): JsonUser => {
+export const getRandomUserFromJson = (): JsonUser => {
     return usersData[getRandomIndex(usersData.length)] as JsonUser
 }

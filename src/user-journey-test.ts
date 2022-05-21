@@ -5,7 +5,7 @@ import { baseUrl } from '../config/constants';
 import { jsonHeaders } from '../http/headers';
 /* @ts-ignore */
 import { randomIntBetween } from 'https://jslib.k6.io/k6-utils/1.1.0/index.js';
-import { getRandomUser } from '../util/userProvider';
+import { getRandomUserFromCsv } from '../util/csvUserProvider';
 
 export let options:Options = {
   vus: 4,
@@ -14,7 +14,7 @@ export let options:Options = {
 
 export default () => {
   const loginRequestBody = () => {
-    const randomUser = getRandomUser()
+    const randomUser = getRandomUserFromCsv()
 
     const jsonBody = {
       password: randomUser.username,
