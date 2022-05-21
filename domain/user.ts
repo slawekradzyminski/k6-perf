@@ -10,7 +10,7 @@ export type User = {
     roles: Roles[]
 }
 
-export const getUser = (): User => {
+export const randomUser = (): User => {
     return {
         username: getRandomString(),
         firstName: getRandomString(),
