@@ -5,16 +5,20 @@ import { baseUrl } from '../config/constants';
 import { jsonHeaders } from '../http/headers';
 /* @ts-ignore */
 import { randomIntBetween } from 'https://jslib.k6.io/k6-utils/1.1.0/index.js';
+import { getRandomUser } from '../util/userProvider';
 
 export let options:Options = {
-  vus: 1,
+  vus: 4,
+  iterations: 4
 };
 
 export default () => {
   const loginRequestBody = () => {
+    const randomUser = getRandomUser()
+
     const jsonBody = {
-      password: 'admin',
-      username: 'admin'
+      password: randomUser.username,
+      username: randomUser.password
     }
     return JSON.stringify(jsonBody)
   }
