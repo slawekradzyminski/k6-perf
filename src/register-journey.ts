@@ -1,4 +1,4 @@
-import { check } from 'k6';
+import { check, sleep } from 'k6';
 import { Options } from 'k6/options';
 import http from 'k6/http';
 import { baseUrl } from '../config/constants';
@@ -25,4 +25,7 @@ export default () => {
     'status is 201': () => registrationResult.status === 201,
   });
 
+  sleep(3)
+
+  http.post
 };
