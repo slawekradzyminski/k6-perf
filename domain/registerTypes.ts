@@ -1,6 +1,6 @@
 import { Roles } from "./roles"
 
-export type RegisterRequest = {
+export type User = {
     username: string,
     email: string,
     password: string,

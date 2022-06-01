@@ -1,8 +1,8 @@
-import { RegisterRequest } from "../domain/registerTypes"
+import { User } from "../domain/registerTypes"
 import { Roles } from "../domain/roles"
 import { getRandomEmail, getRandomString } from "./random"
 
-export const getRandomUser = (): RegisterRequest => {
+export const getRandomUser = (): User => {
     return {
         email: getRandomEmail(),
         username: getRandomString(),
