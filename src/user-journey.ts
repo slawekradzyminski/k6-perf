@@ -1,4 +1,4 @@
-import { sleep, check } from 'k6';
+import { check } from 'k6';
 import { Options } from 'k6/options';
 import http from 'k6/http';
 import { baseUrl } from '../config/constants';
