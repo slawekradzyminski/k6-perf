@@ -36,7 +36,7 @@ module.exports = {
     // see `src/post-file-test.ts` for an test example using an asset
     new CopyPlugin({
       patterns: [{ 
-        from: path.resolve(__dirname, 'assets'), 
+        from: path.resolve(__dirname, 'data'), 
         noErrorOnMissing: true 
       }],
     }),
