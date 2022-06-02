@@ -11,6 +11,7 @@ import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporte
 // @ts-ignore
 import {textSummary } from 'https://jslib.k6.io/k6-summary/0.0.1/index.js';
 import { refreshToken } from '../request/refreshTokenRequest';
+import { updateUser } from '../request/updateUserRequest';
 
 export const options: Options = {
   vus: 1,
@@ -32,6 +33,8 @@ export default () => {
   getMe(user.email, token)
   sleep(2)
   token = refreshToken(token)
+  sleep(3)
+  updateUser(user, token)
 };
 
 export function handleSummary(data: JSONObject) {
