@@ -10,10 +10,11 @@ import { getMe } from '../request/getMeRequest';
 import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
 // @ts-ignore
 import {textSummary } from 'https://jslib.k6.io/k6-summary/0.0.1/index.js';
+import { refreshToken } from '../request/refreshTokenRequest';
 
 export const options: Options = {
-  vus: 2,
-  iterations: 2
+  vus: 1,
+  iterations: 1
 };
 
 export default () => {
@@ -29,6 +30,8 @@ export default () => {
   getSingleUser(user.username, token)
   sleep(2)
   getMe(user.email, token)
+  sleep(2)
+  token = refreshToken(token)
 };
 
 export function handleSummary(data: JSONObject) {
