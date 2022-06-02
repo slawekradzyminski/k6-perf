@@ -10,6 +10,7 @@ export const options: Options = {
 };
 
 export default () => {
+  let token: string | undefined
   const user = getRandomUser()
 
   register(user)
