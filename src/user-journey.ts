@@ -15,5 +15,5 @@ export default () => {
 
   register(user)
   sleep(5)
-  login(user)
+  token = login(user)
 };
