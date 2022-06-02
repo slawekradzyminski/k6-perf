@@ -6,6 +6,7 @@ import { jsonHeaders } from '../http/headers';
 import { LoginRequest } from '../domain/loginTypes';
 import { SharedArray } from 'k6/data';
 import papa from "papaparse";
+import { getRandomIndex } from '../util/random';
 
 export const options: Options = {
   vus: 5,
@@ -17,8 +18,7 @@ const csvData = new SharedArray('users data', () => {
 })
 
 const loginRequestBody = (): string => {
-  const getRandomIndex = Math.floor(Math.random() * csvData.length);
-  const randomUser = csvData[getRandomIndex] as LoginRequest;
+  const randomUser = csvData[getRandomIndex(csvData.length)] as LoginRequest;
 
   const body: LoginRequest = {
     username: randomUser.username,
