@@ -9,28 +9,27 @@ import { getMe } from '../request/getMeRequest';
 // @ts-ignore
 import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
 // @ts-ignore
-import {textSummary } from 'https://jslib.k6.io/k6-summary/0.0.1/index.js';
+import { textSummary } from 'https://jslib.k6.io/k6-summary/0.0.1/index.js';
 import { refreshToken } from '../request/refreshTokenRequest';
 import { updateUser } from '../request/updateUserRequest';
+import { repeat } from '../util/requestUtil';
 
 export const options: Options = {
-  stages: [
-    { duration: '5m', target: 30 },
-    { duration: '10m', target: 30 },
-  ]
+  vus: 1,
+  iterations: 1
 };
 
 export default () => {
-  let token: string | undefined
+  let token: string
   const user = getRandomUser()
 
   register(user)
   sleep(5)
   token = login(user)
   sleep(2)
-  getAllUsers(token)
+  repeat(() => getAllUsers(token), 3)
   sleep(2)
-  getSingleUser(user.username, token)
+  repeat(() => getSingleUser(user.username, token), 2)
   sleep(2)
   getMe(user.email, token)
   sleep(2)
