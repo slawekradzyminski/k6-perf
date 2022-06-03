@@ -63,7 +63,7 @@ const loginRequestBody = (): string => {
   return JSON.stringify(body)
 }
 
-export function loginJourney() {
+export const loginJourney = () => {
   const loginResponse = http.post(`${baseUrl}/users/signin`, loginRequestBody(), {
     headers: jsonHeaders
   });
@@ -72,7 +72,7 @@ export function loginJourney() {
   });
 };
 
-export function userJourney() {
+export const userJourney = () => {
   let token: string
   const user = getRandomUser()
 
