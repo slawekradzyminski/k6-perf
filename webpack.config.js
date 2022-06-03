@@ -2,6 +2,10 @@ const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const GlobEntries = require('webpack-glob-entries');
+const webpack = require('webpack')
+const dotenv = require('dotenv')
+
+dotenv.config();
 
 module.exports = {
   mode: 'production',
@@ -31,13 +35,16 @@ module.exports = {
     colors: true,
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env': JSON.stringify(process.env)
+    }),
     new CleanWebpackPlugin(),
     // Copy assets to the destination folder
     // see `src/post-file-test.ts` for an test example using an asset
     new CopyPlugin({
-      patterns: [{ 
-        from: path.resolve(__dirname, 'data'), 
-        noErrorOnMissing: true 
+      patterns: [{
+        from: path.resolve(__dirname, 'data'),
+        noErrorOnMissing: true
       }],
     }),
   ],

@@ -14,8 +14,10 @@ import { refreshToken } from '../request/refreshTokenRequest';
 import { updateUser } from '../request/updateUserRequest';
 
 export const options: Options = {
-  vus: 1,
-  iterations: 1
+  stages: [
+    { duration: '5m', target: 30 },
+    { duration: '10m', target: 30 },
+  ]
 };
 
 export default () => {

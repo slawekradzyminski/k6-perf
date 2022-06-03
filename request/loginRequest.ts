@@ -5,10 +5,14 @@ import { LoginResponse } from "../domain/loginTypes";
 import { User } from "../domain/registerTypes";
 import { jsonHeaders } from "../http/headers";
 
-const loginRequest = (user: User) => {
+export const login = (user: User) => handleLogin(user.username, user.password)
+
+export const loginAsAdmin = (username: string, password: string) => handleLogin(username, password)
+
+const loginRequest = (username: string, password: string) => {
     const body = {
-        username: user.username,
-        password: user.password
+        username: username,
+        password: password
     }
     return JSON.stringify(body)
 }
@@ -17,8 +21,8 @@ const tokenPresentInResponse = (loginResponse: LoginResponse) => {
     return typeof(loginResponse.token) !== "undefined"
 }
 
-export const login = (user: User) => {
-    const loginResult = http.post(`${baseUrl}/users/signin`, loginRequest(user), {
+const handleLogin = (username: string, password: string) => {
+    const loginResult = http.post(`${baseUrl}/users/signin`, loginRequest(username, password), {
         headers: jsonHeaders
     })
     const loginResponse = loginResult.json() as LoginResponse
