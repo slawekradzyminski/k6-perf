@@ -15,8 +15,17 @@ import { updateUser } from '../request/updateUserRequest';
 import { repeat, runWithProbability } from '../util/requestUtil';
 
 export const options: Options = {
-  vus: 1,
-  iterations: 1
+  stages: [
+    { duration: '2m', target: 10 },
+    { duration: '30s', target: 60 }, 
+    { duration: '2m', target: 5 }, 
+    { duration: '30s', target: 60 }, 
+    { duration: '2m', target: 0 }
+  ],
+  thresholds: {
+    http_req_failed: ['rate<0.01'],
+    checks: ['rate>0.9'],
+  }
 };
 
 export default () => {
