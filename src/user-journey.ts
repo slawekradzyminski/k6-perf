@@ -12,7 +12,7 @@ import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporte
 import { textSummary } from 'https://jslib.k6.io/k6-summary/0.0.1/index.js';
 import { refreshToken } from '../request/refreshTokenRequest';
 import { updateUser } from '../request/updateUserRequest';
-import { repeat } from '../util/requestUtil';
+import { repeat, runWithProbability } from '../util/requestUtil';
 
 export const options: Options = {
   vus: 1,
@@ -31,7 +31,7 @@ export default () => {
   sleep(2)
   repeat(() => getSingleUser(user.username, token), 2)
   sleep(2)
-  getMe(user.email, token)
+  runWithProbability(() => getMe(user.email, token), 0.5)
   sleep(2)
   token = refreshToken(token)
   sleep(3)
