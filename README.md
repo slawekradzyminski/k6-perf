@@ -2,6 +2,15 @@
   
   ![banner](docs/ts-js-k6.png)
 
+# Running tests
+
+Create .env file with the following secrets
+
+```
+ADMIN_LOGIN=admin
+ADMIN_PASSWORD=admin
+```
+
 # Template to use TypeScript with k6
 
 ![.github/workflows/push.yml](https://github.com/k6io/template-typescript/workflows/.github/workflows/push.yml/badge.svg?branch=master)
