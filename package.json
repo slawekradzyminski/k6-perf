@@ -22,6 +22,6 @@
     "webpack-glob-entries": "^1.0.1"
   },
   "scripts": {
-    "start": "webpack"
+    "start": "export NODE_OPTIONS='--openssl-legacy-provider' && webpack"
   }
 }
