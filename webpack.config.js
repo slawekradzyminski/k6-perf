@@ -5,7 +5,7 @@ const GlobEntries = require('webpack-glob-entries');
 
 module.exports = {
   mode: 'production',
-  entry: GlobEntries('./src/*test*.ts'), // Generates multiple entry for each test
+  entry: GlobEntries('./src/*journey*.ts'), // Generates multiple entry for each test
   output: {
     path: path.join(__dirname, 'dist'),
     libraryTarget: 'commonjs',
@@ -36,7 +36,7 @@ module.exports = {
     // see `src/post-file-test.ts` for an test example using an asset
     new CopyPlugin({
       patterns: [{ 
-        from: path.resolve(__dirname, 'assets'), 
+        from: path.resolve(__dirname, 'data'), 
         noErrorOnMissing: true 
       }],
     }),
