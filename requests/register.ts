@@ -11,7 +11,7 @@ export const register = (user: RegisterRequest): number => {
     });
     
     check(registerResponse, {
-        'status is 201': () => registerResponse.status === 201
+        'register status is 201': () => registerResponse.status === 201
     })
 
     return registerResponse.status
