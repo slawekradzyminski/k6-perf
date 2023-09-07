@@ -5,7 +5,7 @@ import { jsonHeaders } from "../http/headers";
 import { RegisterRequest } from "../domain/interfaces/register";
 
 
-export const register = (user: RegisterRequest) => {
+export const register = (user: RegisterRequest): number => {
     const registerResponse = http.post(`${baseUrl}/users/signup`, JSON.stringify(user), {
         headers: jsonHeaders
     });
@@ -13,5 +13,7 @@ export const register = (user: RegisterRequest) => {
     check(registerResponse, {
         'status is 201': () => registerResponse.status === 201
     })
+
+    return registerResponse.status
 }
 

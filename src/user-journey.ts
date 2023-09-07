@@ -17,7 +17,10 @@ export default () => {
     const user = getRandomUser()
 
     // when
-    register(user)
-    sleep(3)
-    login(user)
+    const registerResponseStatus = register(user)
+    
+    if (registerResponseStatus === 201) {
+        sleep(3)
+        login(user)
+    }
 };
