@@ -19,10 +19,5 @@ export let options: Options = {
 export default () => {
     const getRandomIndex = Math.floor(Math.random() * csvData.length);
     const randomUser = csvData[getRandomIndex] as LoginRequest;
-
-    const body: LoginRequest = {
-        username: randomUser.username,
-        password: randomUser.password
-    }
-    login(body)
+    login(randomUser)
 };
