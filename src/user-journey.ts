@@ -14,8 +14,8 @@ import { getRandomEmailTo } from '../utils/emailGenerator';
 import { sendEmail } from '../requests/email';
 
 export let options: Options = {
-    vus: 5,
-    iterations: 10,
+    vus: 20,
+    iterations: 100,
     thresholds: {
         checks: ['rate>0.9'],
     }
