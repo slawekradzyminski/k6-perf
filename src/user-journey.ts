@@ -14,16 +14,26 @@ import { getRandomEmailTo } from '../utils/emailGenerator';
 import { sendEmail } from '../requests/email';
 import { editUser } from '../requests/edit';
 
-const numberOfUsers = 30
+const numberOfUsers = 15
 
 export let options: Options = {
-    stages: [
-        { duration: '3m', target: numberOfUsers }, // od 0 do numberOfUsers
-        { duration: '5m', target: numberOfUsers }, // stały ruch numberOfUsers
-        { duration: '3m', target: 0 }, // od numberOfUsers do 0
-    ],
+    scenarios: {
+        contacts: {
+            executor: 'ramping-arrival-rate',
+            startRate: 0,
+            timeUnit: '30s', // tip jak to zdefiniować: średni czas trwania user journeya
+            preAllocatedVUs: 100,
+            stages: [
+                { target: numberOfUsers, duration: '1m' }, // ramp up
+                { target: numberOfUsers, duration: '1m' }, // peak load
+                { target: 0, duration: '1m' }, // ramp down
+            ],
+        },
+    },
     thresholds: {
         checks: ['rate>0.9'],
+        http_req_failed: ['rate<0.01'], 
+        http_req_duration: ['p(95)<1000'], 
     }
 };
 
@@ -58,9 +68,9 @@ const executeWithProbability = (fn: Function, p: number) => {
     }
 }
 
-export function handleSummary(data: any) {
-    return {
-        "result.html": htmlReport(data),
-        stdout: textSummary(data, { indent: " ", enableColors: true }),
-    };
-}
+// export function handleSummary(data: any) {
+//     return {
+//         "result.html": htmlReport(data),
+//         stdout: textSummary(data, { indent: " ", enableColors: true }),
+//     };
+// }
