@@ -5,6 +5,7 @@ import { register } from '../requests/register';
 import { login } from '../requests/login';
 import { checkGetAllUsers } from '../requests/getAllUsers';
 import { checkGetSingleUser } from '../requests/getSingleUser';
+import { checkGetMe } from '../requests/getMe';
 
 export let options: Options = {
     vus: 2,
@@ -24,5 +25,8 @@ export default () => {
     const token = login(user)
     sleep(1)
     checkGetAllUsers(token)
+    sleep(2)
     checkGetSingleUser(token, user.username)
+    sleep(2)
+    checkGetMe(token)
 };
