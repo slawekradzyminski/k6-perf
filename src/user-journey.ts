@@ -12,8 +12,8 @@ import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporte
 import { textSummary } from "https://jslib.k6.io/k6-summary/0.0.1/index.js";
 
 export let options: Options = {
-    vus: 2,
-    iterations: 2,
+    vus: 10,
+    iterations: 10,
     thresholds: {
         checks: ['rate>0.9'],
     }
@@ -28,12 +28,22 @@ export default () => {
     sleep(3)
     const token = login(user)
     sleep(1)
-    checkGetAllUsers(token)
+    executeNTimes(() => checkGetAllUsers(token), 4)
     sleep(2)
-    checkGetSingleUser(token, user.username)
+    executeNTimes(() =>checkGetSingleUser(token, user.username), 3)
     sleep(2)
     checkGetMe(token)
 };
+
+const executeNTimes = (fn: Function, n: number) => {
+    for (let i = 0; i < Math.floor(n); i++) {
+        fn();
+    }
+}
+
+const executeWithProbability = (fn: Function, p: number) => {
+
+}
 
 export function handleSummary(data: any) {
     return {
