@@ -14,14 +14,20 @@ import { getRandomEmailTo } from '../utils/emailGenerator';
 import { sendEmail } from '../requests/email';
 import { editUser } from '../requests/edit';
 
+const numberOfUsers = 30
+
 export let options: Options = {
-    vus: 10,
-    iterations: 20,
+    stages: [
+        { duration: '3m', target: numberOfUsers }, // od 0 do numberOfUsers
+        { duration: '5m', target: numberOfUsers }, // stały ruch numberOfUsers
+        { duration: '3m', target: 0 }, // od numberOfUsers do 0
+    ],
     thresholds: {
         checks: ['rate>0.9'],
     }
 };
 
+// To flow uzytkownika pokrywa 80% + najpopularniejszych zapytań do naszej aplikacji
 export default () => {
     // given
     const user = getRandomUser()
@@ -31,26 +37,23 @@ export default () => {
     register(user)
     sleep(3)
     const token = login(user)
-    sleep(1)
     executeNTimes(() => checkGetAllUsers(token), 4)
-    sleep(2)
-    executeNTimes(() =>checkGetSingleUser(token, user.username), 3)
-    sleep(2) // czas na asynchroniczne przetworzenie kroku przed
+    executeNTimes(() => checkGetSingleUser(token, user.username), 3)
     executeWithProbability(() => checkGetMe(token), 0.5)
-    sleep(2)
     executeWithProbability(() => editUser(token, user.username), 0.25)
-    sleep(2)
     executeNTimes(() => sendEmail(email), 2)
 };
 
 const executeNTimes = (fn: Function, n: number) => {
     for (let i = 0; i < Math.floor(n); i++) {
+        sleep(2)
         fn();
     }
 }
 
 const executeWithProbability = (fn: Function, p: number) => {
     if (Math.random() < p) {
+        sleep(2)
         fn()
     }
 }

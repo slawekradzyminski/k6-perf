@@ -3,10 +3,9 @@ import http from "k6/http";
 import { baseUrl } from "../config/constants";
 import { authHeaders } from "../http/headers";
 import { getRandomUser } from "../utils/user";
-import { EditRequest } from "../domain/interfaces/edit";
 import { Roles } from "../domain/enums/roles";
 
-const buildEditRequest = (username: string): EditRequest => {
+const buildEditRequest = (username: string) => {
     const newUser = getRandomUser()
     return {
         username: username,
