@@ -10,6 +10,8 @@ import { checkGetMe } from '../requests/getMe';
 import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
 // @ts-ignore
 import { textSummary } from "https://jslib.k6.io/k6-summary/0.0.1/index.js";
+import { getRandomEmailTo } from '../utils/emailGenerator';
+import { sendEmail } from '../requests/email';
 
 export let options: Options = {
     vus: 5,
@@ -22,6 +24,7 @@ export let options: Options = {
 export default () => {
     // given
     const user = getRandomUser()
+    const email = getRandomEmailTo(user.email)
 
     // when
     register(user)
@@ -33,6 +36,7 @@ export default () => {
     executeNTimes(() =>checkGetSingleUser(token, user.username), 3)
     sleep(2)
     executeWithProbability(() => checkGetMe(token), 0.5)
+    executeNTimes(() => sendEmail(email), 2)
 };
 
 const executeNTimes = (fn: Function, n: number) => {
