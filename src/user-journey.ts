@@ -4,6 +4,7 @@ import { getRandomUser } from '../utils/user';
 import { register } from '../requests/register';
 import { login } from '../requests/login';
 import { checkGetAllUsers } from '../requests/getAllUsers';
+import { checkGetSingleUser } from '../requests/getSingleUser';
 
 export let options: Options = {
     vus: 2,
@@ -23,4 +24,5 @@ export default () => {
     const token = login(user)
     sleep(1)
     checkGetAllUsers(token)
+    checkGetSingleUser(token, user.username)
 };
