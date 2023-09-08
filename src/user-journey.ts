@@ -6,6 +6,10 @@ import { login } from '../requests/login';
 import { checkGetAllUsers } from '../requests/getAllUsers';
 import { checkGetSingleUser } from '../requests/getSingleUser';
 import { checkGetMe } from '../requests/getMe';
+// @ts-ignore
+import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
+// @ts-ignore
+import { textSummary } from "https://jslib.k6.io/k6-summary/0.0.1/index.js";
 
 export let options: Options = {
     vus: 2,
@@ -30,3 +34,10 @@ export default () => {
     sleep(2)
     checkGetMe(token)
 };
+
+export function handleSummary(data: any) {
+    return {
+        "result.html": htmlReport(data),
+        stdout: textSummary(data, { indent: " ", enableColors: true }),
+    };
+}
