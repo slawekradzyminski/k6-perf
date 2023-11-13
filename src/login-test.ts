@@ -13,9 +13,13 @@ export let options: Options = {
 
 // Functional test
 export default () => {
+    // given
+    let token: string
     const user = getRandomUser()
+
+    // when
     register(user)
     sleep(3)
-    login(user)    
+    token = login(user)
 };
 

@@ -12,12 +12,21 @@ const getLoginBody = (user: User): LoginRequest => {
     }
 }
 
-export const login = (user: User) => {
-    const loginRequest = http.post(`${baseUrl}/users/signin`, JSON.stringify(getLoginBody(user)), {
+// @ts-ignore
+const tokenPresentInResponse = (loginResponse) => {
+    return typeof (loginResponse.json().token) !== 'undefined'
+}
+
+export const login = (user: User): string => {
+    const loginResponse = http.post(`${baseUrl}/users/signin`, JSON.stringify(getLoginBody(user)), {
         headers: jsonHeaders
     });
 
-    check(loginRequest, {
-        'status is 200': () => loginRequest.status === 200,
+    check(loginResponse, {
+        'status is 200': () => loginResponse.status === 200,
+        'token present in login response': () => tokenPresentInResponse(loginResponse)
     });
+
+    // @ts-ignore
+    return loginResponse.json().token
 }
