@@ -9,4 +9,6 @@ export interface RegisterRequest {
     roles: Roles[]
 }
 
-export interface User extends RegisterRequest { }
+export interface User extends RegisterRequest { 
+    
+}
