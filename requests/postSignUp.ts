@@ -5,11 +5,11 @@ import { jsonHeaders } from "../config/headers";
 import { User } from "../domain/register";
 
 export const register = (user: User) => {
-    const registerRequest = http.post(`${baseUrl}/users/signup`, JSON.stringify(user), {
+    const response = http.post(`${baseUrl}/users/signup`, JSON.stringify(user), {
         headers: jsonHeaders
     });
 
-    check(registerRequest, {
-        'status is 201': () => registerRequest.status === 201,
+    check(response, {
+        'register status is 201': () => response.status === 201,
     });
 }

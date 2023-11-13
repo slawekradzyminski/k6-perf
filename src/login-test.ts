@@ -4,6 +4,7 @@ import { Options } from 'k6/options';
 import { getRandomUser } from '../generators/user';
 import { login } from '../requests/postSignIn';
 import { register } from '../requests/postSignUp';
+import { getUsers } from '../requests/getAllUsers';
 
 // Performance test
 export let options: Options = {
@@ -21,5 +22,6 @@ export default () => {
     register(user)
     sleep(3)
     token = login(user)
+    getUsers(token)
 };
 

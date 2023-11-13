@@ -18,15 +18,15 @@ const tokenPresentInResponse = (loginResponse) => {
 }
 
 export const login = (user: User): string => {
-    const loginResponse = http.post(`${baseUrl}/users/signin`, JSON.stringify(getLoginBody(user)), {
+    const response = http.post(`${baseUrl}/users/signin`, JSON.stringify(getLoginBody(user)), {
         headers: jsonHeaders
     });
 
-    check(loginResponse, {
-        'status is 200': () => loginResponse.status === 200,
-        'token present in login response': () => tokenPresentInResponse(loginResponse)
+    check(response, {
+        'login status is 200': () => response.status === 200,
+        'token present in login response': () => tokenPresentInResponse(response)
     });
 
     // @ts-ignore
-    return loginResponse.json().token
+    return response.json().token
 }

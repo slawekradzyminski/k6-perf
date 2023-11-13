@@ -23,6 +23,7 @@
     "webpack-glob-entries": "^1.0.1"
   },
   "scripts": {
-    "start": "cross-env NODE_OPTIONS='--openssl-legacy-provider' webpack"
+    "start": "cross-env NODE_OPTIONS='--openssl-legacy-provider' webpack",
+    "test": "npm start && k6 run dist/login-test.js"
   }
 }
