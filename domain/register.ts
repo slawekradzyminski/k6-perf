@@ -8,3 +8,5 @@ export interface RegisterRequest {
     lastName: string,
     roles: Roles[]
 }
+
+export interface User extends RegisterRequest { }
