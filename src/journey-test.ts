@@ -9,8 +9,9 @@ import { getUser } from '../requests/getUser';
 
 // Performance test
 export let options: Options = {
-    vus: 1,
-    iterations: 1,
+    vus: 2,
+    iterations: 6,
+    duration: '20m'
 };
 
 // Functional test
@@ -24,8 +25,20 @@ export default () => {
     sleep(3)
     token = login(user)
     sleep(2)
-    getUsers(token)
+    repeatNTimes(() => getUsers(token), 3.5)
     sleep(2)
-    getUser(token, user.username)
+    executeWithProbability(() => getUser(token, user.username), 0.5)
 };
 
+const repeatNTimes = (fn: Function, n: number) => {
+    for (let i = 0; i < Math.floor(n); i++ ) {
+        fn()
+    }
+    executeWithProbability(fn, n - Math.floor(n))
+}
+
+const executeWithProbability = (fn: Function, p: number) => {
+    if (Math.random() <= p) {
+        fn()
+    }
+}
