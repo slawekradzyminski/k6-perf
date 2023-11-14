@@ -3,7 +3,8 @@ import http from "k6/http";
 import { baseUrl } from "../config/constants";
 import { authHeaders } from "../config/headers";
 import { User } from "../domain/register";
-import { getRandomUser } from "../generators/user";
+import { EditRequest } from "../domain/edit";
+import { getRandomEmail, getRandomString } from "../generators/random";
 
 export const edit = (token: string, user: User) => {
     const response = http.put(`${baseUrl}/users/${user.username}`, JSON.stringify(getEditBody(user)), {
@@ -15,13 +16,13 @@ export const edit = (token: string, user: User) => {
     });
 }
 
-const getEditBody = (user: User) => {
-    const newUser = getRandomUser()
+const getEditBody = (user: User): EditRequest => {
+    const { password, ...userWithoutPassword } = user;
+
     return {
-        roles: user.roles,
-        username: user.username,
-        firstName: newUser.firstName,
-        lastName: newUser.lastName,
-        email: newUser.email
+        ...userWithoutPassword,
+        email: getRandomEmail(),
+        firstName: getRandomString(),
+        lastName: getRandomString()
     }
 }
