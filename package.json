@@ -27,6 +27,7 @@
   "scripts": {
     "start": "cross-env NODE_OPTIONS='--openssl-legacy-provider' webpack",
     "test": "npm start && k6 run dist/login-test.js",
-    "csvTest": "npm start && k6 run dist/login-test-with-csv.js"
+    "csvTest": "npm start && k6 run dist/login-test-with-csv.js",
+    "jsonTest": "npm start && k6 run dist/login-test-with-json.js"
   }
 }
