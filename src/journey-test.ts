@@ -12,6 +12,7 @@ import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporte
 // @ts-ignore
 import { textSummary } from "https://jslib.k6.io/k6-summary/0.0.1/index.js";
 import { edit } from '../requests/putUser';
+import { repeatNTimes, executeWithProbability } from '../utils/executors';
 
 // Performance test
 export let options: Options = {
@@ -35,7 +36,7 @@ export default () => {
     sleep(2)
     executeWithProbability(() => getUser(token, user.username), 0.5)
     sleep(2)
-    edit(token, user)
+    executeWithProbability(() => edit(token, user), 0.5)
 };
 
 export function handleSummary(data: any) {
@@ -43,18 +44,4 @@ export function handleSummary(data: any) {
         "result.html": htmlReport(data),
         stdout: textSummary(data, { indent: " ", enableColors: true }),
     };
-}
-
-const repeatNTimes = (fn: Function, n: number) => {
-    for (let i = 0; i < Math.floor(n); i++) {
-        fn()
-    }
-    // last iteration with certain probability. So for 3.5 last iteration with probability 50%
-    executeWithProbability(fn, n - Math.floor(n))
-}
-
-const executeWithProbability = (fn: Function, p: number) => {
-    if (Math.random() <= p) {
-        fn()
-    }
 }
