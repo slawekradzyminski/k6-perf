@@ -7,10 +7,15 @@ import { register } from '../requests/postSignUp';
 import { getUsers } from '../requests/getAllUsers';
 import { getUser } from '../requests/getUser';
 
+// @ts-ignore
+import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
+// @ts-ignore
+import { textSummary } from "https://jslib.k6.io/k6-summary/0.0.1/index.js";
+
 // Performance test
 export let options: Options = {
-    vus: 2,
-    iterations: 6,
+    vus: 1,
+    iterations: 1,
     duration: '20m'
 };
 
@@ -30,8 +35,15 @@ export default () => {
     executeWithProbability(() => getUser(token, user.username), 0.5)
 };
 
+export function handleSummary(data: any) {
+    return {
+        "result.html": htmlReport(data),
+        stdout: textSummary(data, { indent: " ", enableColors: true }),
+    };
+}
+
 const repeatNTimes = (fn: Function, n: number) => {
-    for (let i = 0; i < Math.floor(n); i++ ) {
+    for (let i = 0; i < Math.floor(n); i++) {
         fn()
     }
     // last iteration with certain probability. So for 3.5 last iteration with probability 50%

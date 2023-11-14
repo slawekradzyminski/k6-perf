@@ -13,7 +13,7 @@ export const getUser = (token: string, username: string) => {
     const user = response.json() as UserResponse
 
     check(response, {
-        'get user status is 200': () => response.status === 200,
-        'get user returned correct user': () => user.username === username
+        '[Get user] status is 200': () => response.status === 200,
+        '[Get user] returned correct user': () => user.username === username
     });
 }

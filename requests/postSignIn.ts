@@ -23,8 +23,8 @@ export const login = (user: UserCredentials): string => {
     });
 
     check(response, {
-        'login status is 200': () => response.status === 200,
-        'token present in login response': () => tokenPresentInResponse(response)
+        '[Login] status is 200': () => response.status === 200,
+        '[Login] token present in response': () => tokenPresentInResponse(response)
     });
 
     // @ts-ignore

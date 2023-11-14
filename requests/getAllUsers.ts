@@ -13,7 +13,7 @@ export const getUsers = (token: string) => {
     const users = response.json() as UserResponse[]
 
     check(response, {
-        'get all users status is 200': () => response.status === 200,
-        'get all users returned at least one user': () => users.length > 0
+        '[Get all users] status is 200': () => response.status === 200,
+        '[Get all users] returned at least one user': () => users.length > 0
     });
 }

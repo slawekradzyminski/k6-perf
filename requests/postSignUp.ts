@@ -10,6 +10,6 @@ export const register = (user: User) => {
     });
 
     check(response, {
-        'register status is 201': () => response.status === 201,
+        '[Register] status is 201': () => response.status === 201,
     });
 }
