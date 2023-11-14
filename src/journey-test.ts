@@ -11,6 +11,7 @@ import { getUser } from '../requests/getUser';
 import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
 // @ts-ignore
 import { textSummary } from "https://jslib.k6.io/k6-summary/0.0.1/index.js";
+import { edit } from '../requests/putUser';
 
 // Performance test
 export let options: Options = {
@@ -33,6 +34,8 @@ export default () => {
     repeatNTimes(() => getUsers(token), 3.5)
     sleep(2)
     executeWithProbability(() => getUser(token, user.username), 0.5)
+    sleep(2)
+    edit(token, user)
 };
 
 export function handleSummary(data: any) {
