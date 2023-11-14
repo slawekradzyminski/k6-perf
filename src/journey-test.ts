@@ -13,18 +13,25 @@ import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporte
 import { textSummary } from "https://jslib.k6.io/k6-summary/0.0.1/index.js";
 import { edit } from '../requests/putUser';
 import { repeatNTimes, executeWithProbability } from '../utils/executors';
+import { sendEmail } from '../requests/postEmail';
+import { getRandomString } from '../generators/random';
+
+export function setup() {
+    return "hello" + getRandomString();
+}
 
 // Performance test
 export let options: Options = {
-    vus: 1,
-    iterations: 1,
+    vus: 10,
+    iterations: 20,
     duration: '20m'
 };
 
 // Functional test
-export default () => {
+export default (prefix: string) => {
     // given
     let token: string
+    console.log(prefix)
     const user = getRandomUser()
 
     // when
@@ -37,6 +44,8 @@ export default () => {
     executeWithProbability(() => getUser(token, user.username), 0.5)
     sleep(2)
     executeWithProbability(() => edit(token, user), 0.5)
+    sleep(2)
+    repeatNTimes(() => sendEmail(token, user.email, prefix), 2)
 };
 
 export function handleSummary(data: any) {
