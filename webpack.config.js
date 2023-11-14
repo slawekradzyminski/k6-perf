@@ -33,7 +33,6 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     // Copy assets to the destination folder
-    // see `src/post-file-test.ts` for an test example using an asset
     new CopyPlugin({
       patterns: [{ 
         from: path.resolve(__dirname, 'assets'), 

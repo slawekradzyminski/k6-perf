@@ -1,8 +1,8 @@
-import { RegisterRequest } from "../domain/register";
+import { User } from "../domain/register";
 import { Roles } from "../enums/roles";
 import { getRandomEmail, getRandomString } from "./random";
 
-export const getRandomUser = (): RegisterRequest => {
+export const getRandomUser = (): User => {
     return {
         username: getRandomString(),
         password: getRandomString(),

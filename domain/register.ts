@@ -1,8 +1,11 @@
 import { Roles } from "../enums/roles";
 
-export interface RegisterRequest {
+export interface UserCredentials {
     username: string,
-    password: string,
+    password: string
+}
+
+export interface RegisterRequest extends UserCredentials {
     email: string,
     firstName: string,
     lastName: string,
@@ -10,5 +13,5 @@ export interface RegisterRequest {
 }
 
 export interface User extends RegisterRequest { 
-    
+
 }
