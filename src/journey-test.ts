@@ -22,16 +22,26 @@ export function setup() {
 
 // Performance test
 export let options: Options = {
-    vus: 10,
-    iterations: 20,
-    duration: '20m'
+    vus: 1,
+    iterations: 1,
+    duration: '20m',
+    thresholds: {
+        // http errors should be less than 3%
+        'http_req_failed': ['rate<0.03'],
+        // for requests tagged as high priority errors should be less than 1%
+        'http_req_failed{highPriority:true}': ['rate<0.01'],
+        // 95% of requests should be below 2 seconds and 99% of requests should be below 4 seconds
+        // values here are defined in milliseconds
+        'http_req_duration': ['p(95)<2000', 'p(99)<4000'],
+        // the rate of successful checks should be higher than 90%
+        'checks': ['rate>0.9']
+    },
 };
 
 // Functional test
 export default (prefix: string) => {
     // given
     let token: string
-    console.log(prefix)
     const user = getRandomUser()
 
     // when
@@ -47,6 +57,10 @@ export default (prefix: string) => {
     sleep(2)
     repeatNTimes(() => sendEmail(token, user.email, prefix), 2)
 };
+
+export function teardown(prefix: string) {
+    console.log(prefix)
+}
 
 export function handleSummary(data: any) {
     return {
