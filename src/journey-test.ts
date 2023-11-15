@@ -34,6 +34,8 @@ export let options: Options = {
             rate: 30,
             // Start `rate` iterations per second
             timeUnit: '30s', // wartość która odpowiada poprawnemu czasowi trwania user journeya
+            // W przeciągu 30 sekund 30 razy wykonamy request referencyjny (request logowania).
+            // W przeciągu 60 sekund wykona się to 60 razy więc 1rps (60 rpm)
             // Pre-allocate VUs and by default max amount of simultanous users
             preAllocatedVUs: 50,
         },
@@ -58,19 +60,19 @@ export default (prefix: string) => {
     const user = getRandomUser()
 
     // when
-    register(user)
+    register(user) // 1rps
     sleep(3)
-    token = login(user)
+    token = login(user) // 1rps
     sleep(2)
-    repeatNTimes(() => getUsers(token), 3.5)
+    repeatNTimes(() => getUsers(token), 3.5) // 3.5 rps
     sleep(2)
-    executeWithProbability(() => getUser(token, user.username), 0.5)
+    executeWithProbability(() => getUser(token, user.username), 0.5) // 0.5 rps
     sleep(2)
-    executeWithProbability(() => edit(token, user), 0.5)
+    executeWithProbability(() => edit(token, user), 0.5) // 0.5 rps
     sleep(2)
-    repeatNTimes(() => sendEmail(token, user.email, prefix), 2)
+    repeatNTimes(() => sendEmail(token, user.email, prefix), 2) // 2 rps
     sleep(2)
-    executeWithProbability(() => deleteUser(token, user.username), 0.25)
+    executeWithProbability(() => deleteUser(token, user.username), 0.25) // 0.25 rps
 };
 
 export function teardown(prefix: string) {
