@@ -17,9 +17,9 @@ import { sendEmail } from '../requests/postEmail';
 import { getRandomString } from '../generators/random';
 import { deleteUser } from '../requests/deleteUser';
 
-// export function setup() {
-//     return "hello" + getRandomString();
-// }
+export function setup() {
+    return "hello" + getRandomString();
+}
 
 const morningArrivalRate = 30
 const eveningArrivalRate = 40
@@ -71,7 +71,7 @@ export const adminJourney = () => {
     login(user)
 }
 
-export const clientJourney = () => {
+export const clientJourney = (prefix: string) => {
     // given
     let token: string
     const user = getRandomUser()
@@ -87,15 +87,15 @@ export const clientJourney = () => {
     sleep(2)
     executeWithProbability(() => edit(token, user), 0.5) // 0.5 rps
     sleep(2)
-    repeatNTimes(() => sendEmail(token, user.email, ''), 2) // 2 rps
+    repeatNTimes(() => sendEmail(token, user.email, prefix), 2) // 2 rps
     sleep(2)
     executeWithProbability(() => deleteUser(token, user.username), 0.25) // 0.25 rps
 };
 
-// export function teardown(prefix: string) {
-//     console.log(prefix)
-//     // in real world we would write this to file and read in next CI job
-// }
+export function teardown(prefix: string) {
+    console.log(prefix)
+    // in real world we would write this to file and read in next CI job
+}
 
 export function handleSummary(data: any) {
     return {
