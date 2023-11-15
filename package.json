@@ -26,7 +26,7 @@
   },
   "scripts": {
     "start": "cross-env NODE_OPTIONS='--openssl-legacy-provider' webpack",
-    "test": "npm start && k6 run dist/journey-test.js",
+    "test": "npm start && cross-env K6_INFLUXDB_PUSH_INTERVAL='2s' k6 run --out influxdb=http://localhost:8086/db0 dist/journey-test.js",
     "csvTest": "npm start && k6 run dist/login-test-with-csv.js",
     "jsonTest": "npm start && k6 run dist/login-test-with-json.js"
   }
