@@ -18,7 +18,7 @@ export default () => {
     sleep(2)
     users
         .filter(user => user.username !== admin)
-        .forEach(user => { deleteUser(token, user.username) })
+        .forEach(user => deleteUser(token, user.username))
 };
 
 
