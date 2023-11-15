@@ -21,11 +21,15 @@ export function setup() {
     return "hello" + getRandomString();
 }
 
+const referenceMetric = 30
+
 // Performance test
 export let options: Options = {
-    vus: 20,
-    iterations: 100,
-    duration: '20m',
+    stages: [
+        { duration: '3m', target: referenceMetric }, 
+        { duration: '10m', target: referenceMetric }, 
+        { duration: '3m', target: 0 }, 
+    ],
     thresholds: {
         // http errors should be less than 3%
         'http_req_failed': ['rate<0.03'],
