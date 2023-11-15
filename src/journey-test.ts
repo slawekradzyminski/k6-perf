@@ -17,17 +17,25 @@ import { sendEmail } from '../requests/postEmail';
 import { getRandomString } from '../generators/random';
 import { deleteUser } from '../requests/deleteUser';
 
-export function setup() {
-    return "hello" + getRandomString();
-}
+// export function setup() {
+//     return "hello" + getRandomString();
+// }
 
 const morningArrivalRate = 30
 const eveningArrivalRate = 40
 
 // Performance test
-export let options: Options = {
+export const options: Options = {
     scenarios: {
-        contacts: {
+        adminJourney: {
+            exec: 'adminJourney',
+            executor: 'per-vu-iterations',
+            vus: 2,
+            iterations: 20
+        },
+
+        clientJourney: {
+            exec: 'clientJourney',
             executor: 'ramping-arrival-rate',
             // Start iterations per `timeUnit`
             startRate: 30,
@@ -56,8 +64,14 @@ export let options: Options = {
     },
 };
 
-// Functional test
-export default (prefix: string) => {
+export const adminJourney = () => {
+    const user = getRandomUser()
+    register(user)
+    sleep(3)
+    login(user)
+}
+
+export const clientJourney = () => {
     // given
     let token: string
     const user = getRandomUser()
@@ -73,15 +87,15 @@ export default (prefix: string) => {
     sleep(2)
     executeWithProbability(() => edit(token, user), 0.5) // 0.5 rps
     sleep(2)
-    repeatNTimes(() => sendEmail(token, user.email, prefix), 2) // 2 rps
+    repeatNTimes(() => sendEmail(token, user.email, ''), 2) // 2 rps
     sleep(2)
     executeWithProbability(() => deleteUser(token, user.username), 0.25) // 0.25 rps
 };
 
-export function teardown(prefix: string) {
-    console.log(prefix)
-    // in real world we would write this to file and read in next CI job
-}
+// export function teardown(prefix: string) {
+//     console.log(prefix)
+//     // in real world we would write this to file and read in next CI job
+// }
 
 export function handleSummary(data: any) {
     return {
