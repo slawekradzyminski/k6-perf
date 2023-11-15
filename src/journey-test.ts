@@ -23,7 +23,7 @@ export function setup() {
 // Performance test
 export let options: Options = {
     vus: 1,
-    iterations: 1,
+    iterations: 2,
     duration: '20m',
     thresholds: {
         // http errors should be less than 3%
@@ -60,6 +60,7 @@ export default (prefix: string) => {
 
 export function teardown(prefix: string) {
     console.log(prefix)
+    // in real world we would write this to file and read in next CI job
 }
 
 export function handleSummary(data: any) {
