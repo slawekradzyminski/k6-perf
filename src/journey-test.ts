@@ -25,11 +25,19 @@ const referenceMetric = 30
 
 // Performance test
 export let options: Options = {
-    stages: [
-        { duration: '3m', target: referenceMetric }, 
-        { duration: '10m', target: referenceMetric }, 
-        { duration: '3m', target: 0 }, 
-    ],
+    scenarios: {
+        contacts: {
+            executor: 'constant-arrival-rate',
+            // How long the test lasts
+            duration: '10m',
+            // How many iterations per timeUnit
+            rate: 30,
+            // Start `rate` iterations per second
+            timeUnit: '30s', // wartość która odpowiada poprawnemu czasowi trwania user journeya
+            // Pre-allocate VUs and by default max amount of simultanous users
+            preAllocatedVUs: 50,
+        },
+    },
     thresholds: {
         // http errors should be less than 3%
         'http_req_failed': ['rate<0.03'],
