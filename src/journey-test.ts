@@ -21,8 +21,6 @@ export function setup() {
     return "hello" + getRandomString();
 }
 
-const referenceMetric = 30
-
 // Performance test
 export let options: Options = {
     scenarios: {
