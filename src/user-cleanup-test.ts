@@ -3,6 +3,8 @@ import { login } from '../requests/postSignIn';
 import { getUsers } from '../requests/getAllUsers';
 import { deleteUser } from '../requests/deleteUser';
 import { sleep } from 'k6';
+// @ts-ignore
+import { randomIntBetween } from 'https://jslib.k6.io/k6-utils/1.2.0/index.js';
 
 const admin = 'admin'
 
@@ -18,7 +20,11 @@ export default () => {
     sleep(2)
     users
         .filter(user => user.username !== admin)
-        .forEach(user => deleteUser(token, user.username))
+        .forEach(user => {
+            // albo jeszcze lepiej zrobić losowe czekanie w milisekundach
+            sleep(randomIntBetween(1, 60))
+            deleteUser(token, user.username)
+        })
 };
 
 
