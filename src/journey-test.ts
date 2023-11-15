@@ -15,6 +15,7 @@ import { edit } from '../requests/putUser';
 import { repeatNTimes, executeWithProbability } from '../utils/executors';
 import { sendEmail } from '../requests/postEmail';
 import { getRandomString } from '../generators/random';
+import { deleteUser } from '../requests/deleteUser';
 
 export function setup() {
     return "hello" + getRandomString();
@@ -56,6 +57,8 @@ export default (prefix: string) => {
     executeWithProbability(() => edit(token, user), 0.5)
     sleep(2)
     repeatNTimes(() => sendEmail(token, user.email, prefix), 2)
+    sleep(2)
+    executeWithProbability(() => deleteUser(token, user.username), 0.25)
 };
 
 export function teardown(prefix: string) {
