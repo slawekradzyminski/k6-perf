@@ -21,21 +21,26 @@ export function setup() {
     return "hello" + getRandomString();
 }
 
+const morningArrivalRate = 30
+const eveningArrivalRate = 40
+
 // Performance test
 export let options: Options = {
     scenarios: {
         contacts: {
-            executor: 'constant-arrival-rate',
-            // How long the test lasts
-            duration: '10m',
-            // How many iterations per timeUnit
-            rate: 30,
-            // Start `rate` iterations per second
-            timeUnit: '30s', // wartość która odpowiada poprawnemu czasowi trwania user journeya
-            // W przeciągu 30 sekund 30 razy wykonamy request referencyjny (request logowania).
-            // W przeciągu 60 sekund wykona się to 60 razy więc 1rps (60 rpm)
-            // Pre-allocate VUs and by default max amount of simultanous users
-            preAllocatedVUs: 50,
+            executor: 'ramping-arrival-rate',
+            // Start iterations per `timeUnit`
+            startRate: 30,
+            // Start `startRate` iterations per minute
+            timeUnit: '30s',
+            // Pre-allocate necessary VUs.
+            preAllocatedVUs: 100,
+            stages: [
+                { target: morningArrivalRate, duration: '2m' },
+                { target: eveningArrivalRate, duration: '2m' },
+                { target: morningArrivalRate, duration: '2m' },
+                { target: eveningArrivalRate, duration: '2m' },
+            ],
         },
     },
     thresholds: {
