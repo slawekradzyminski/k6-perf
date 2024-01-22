@@ -1,12 +1,10 @@
-import { check, sleep } from 'k6';
+import { sleep } from 'k6';
 import { Options } from 'k6/options';
-import http from 'k6/http';
-import { LoginRequest } from '../domain/login';
-import { baseUrl } from '../config/constants';
-import { jsonHeaders } from '../config/headers';
 import { getRandomUser } from '../generators/userGenerator';
+import { register } from '../http/postSignup';
+import { login } from '../http/postSignin';
 
-export let options:Options = {
+export let options: Options = {
   vus: 2,
   iterations: 2,
   thresholds: {
@@ -16,26 +14,8 @@ export let options:Options = {
 };
 
 export default () => {
-  // register
   const user = getRandomUser()
-  const registerResponse = http.post(`${baseUrl}/users/signup`, JSON.stringify(user), {
-    headers: jsonHeaders
-  })
-  check(registerResponse, {
-    'register status is 201': () => registerResponse.status === 201,
-  });
-
+  register(user)
   sleep(3)
-
-  // login
-  const loginRequest: LoginRequest = {
-    username: user.username,
-    password: user.password,
-  }
-  const loginResponse = http.post(`${baseUrl}/users/signin`, JSON.stringify(loginRequest), {
-    headers: jsonHeaders,
-  });
-  check(loginResponse, {
-    'login status is 200': () => loginResponse.status === 200,
-  });
+  login(user)
 };
