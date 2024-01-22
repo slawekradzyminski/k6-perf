@@ -11,7 +11,11 @@ export const login = (user: User) => {
 
     check(response, {
         'login status is 200': () => response.status === 200,
+        'token present in login response': () => tokenPresentInResponse(response)
     });
+
+    // @ts-ignore
+    return response.json().token
 }
 
 const getLoginBody = (user: User) => {
@@ -20,3 +24,6 @@ const getLoginBody = (user: User) => {
         password: user.password
     })
 }
+
+// @ts-ignore
+const tokenPresentInResponse = (response) => typeof response.json().token !== "undefined";

@@ -17,5 +17,6 @@ export default () => {
   const user = getRandomUser()
   register(user)
   sleep(3)
-  login(user)
+  const token = login(user)
+  sleep(1)
 };
