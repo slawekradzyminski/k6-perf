@@ -5,10 +5,9 @@ import { LoginRequest } from '../domain/login';
 import { baseUrl } from '../config/constants';
 import { jsonHeaders } from '../config/headers';
 import { SharedArray } from 'k6/data';
-import Papa from 'papaparse';
 
-const csvData = new SharedArray('csv data', function () {
-    return Papa.parse(open('./credentials.csv'), { header: true }).data;
+const data = new SharedArray('json data', function () {
+    return JSON.parse(open('./credentials.json')).users;
 });
 
 export let options: Options = {
@@ -21,7 +20,7 @@ export let options: Options = {
 };
 
 export default () => {
-    const randomCredentials = csvData[getRandomRowIndex()] as LoginRequest
+    const randomCredentials = data[getRandomRowIndex()] as LoginRequest
 
     const loginRequest: LoginRequest = {
         username: randomCredentials.username,
@@ -35,5 +34,5 @@ export default () => {
     });
 };
 
-const getRandomRowIndex = () => Math.floor(Math.random() * csvData.length)
+const getRandomRowIndex = () => Math.floor(Math.random() * data.length)
 
