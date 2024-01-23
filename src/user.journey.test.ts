@@ -11,8 +11,10 @@ export let options: Options = {
   vus: 2,
   iterations: 2,
   thresholds: {
-    http_req_failed: ['rate<0.02'],
-    checks: ['rate>0.95'] // % udanych soft assercji
+    'http_req_failed': ['rate<0.02'],
+    'checks': ['rate>0.95'], 
+    'http_req_duration{get:false}': ['p(95)<2000'],
+    'http_req_duration{get:true}': ['p(95)<1000'],
   }
 };
 

@@ -6,7 +6,10 @@ import { UserResponse } from "../domain/user";
 
 export const getUserByUsername = (token: string, username: string) => {
     const response = http.get(`${baseUrl}/users/${username}`, {
-        headers: getAuthHeaders(token)
+        headers: getAuthHeaders(token),
+        tags: {
+            get: "true",
+        }
     })
 
     check(response, {

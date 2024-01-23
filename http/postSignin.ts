@@ -8,6 +8,9 @@ import { LoginResponse } from "../domain/login";
 export const login = (user: User) => {
     const response = http.post(`${baseUrl}/users/signin`, getLoginBody(user), {
         headers: jsonHeaders,
+        tags: {
+            get: "false",
+        }
     });
 
     const loginResponse = response.json() as unknown as LoginResponse

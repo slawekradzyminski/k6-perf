@@ -9,6 +9,9 @@ import { getRandomUser } from "../generators/userGenerator";
 export const edit = (token: string, user: User) => {
     const response = http.put(`${baseUrl}/users/${user.username}`, getEditBody(user), {
         headers: getAuthHeaders(token),
+        tags: {
+            get: "false",
+        }
     });
 
     check(response, {

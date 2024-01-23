@@ -6,12 +6,15 @@ import { UserResponse } from "../domain/user";
 
 export const getAllUsers = (token: string) => {
     const response = http.get(`${baseUrl}/users`, {
-        headers: getAuthHeaders(token)
+        headers: getAuthHeaders(token),
+        tags: {
+            get: "true",
+        }
     })
 
     check(response, {
         'get all users status is 200': () => response.status === 200,
-        'get all users returned at least one user': () => hasAtLeastOneUser(response)
+        'get all users returned at least one user': () => hasAtLeastOneUser(response),
     });
 }
 

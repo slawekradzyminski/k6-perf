@@ -6,7 +6,10 @@ import { User } from "../domain/register";
 
 export const register = (user: User) => {
     const response = http.post(`${baseUrl}/users/signup`, JSON.stringify(user), {
-        headers: jsonHeaders
+        headers: jsonHeaders,
+        tags: {
+            get: "false",
+        }
     })
     check(response, {
         'register status is 201': () => response.status === 201,
