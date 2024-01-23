@@ -10,7 +10,7 @@ import { edit } from '../http/putUser';
 import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
 // @ts-ignore
 import { textSummary } from "https://jslib.k6.io/k6-summary/0.0.1/index.js";
-import { sendEmail } from '../http/postSignin copy';
+import { sendEmail } from '../http/postEmail';
 
 export let options: Options = {
   vus: 2,
