@@ -5,6 +5,7 @@ import { register } from '../http/postSignup';
 import { login } from '../http/postSignin';
 import { getAllUsers } from '../http/getAllUsers';
 import { getUserByUsername } from '../http/getSingleUser';
+import { edit } from '../http/putUser';
 
 export let options: Options = {
   vus: 2,
@@ -24,4 +25,6 @@ export default () => {
   getAllUsers(token)
   sleep(3)
   getUserByUsername(token, user.username)
+  sleep(3)
+  edit(token, user)
 };
