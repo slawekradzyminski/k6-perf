@@ -11,19 +11,25 @@ import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporte
 // @ts-ignore
 import { textSummary } from "https://jslib.k6.io/k6-summary/0.0.1/index.js";
 import { sendEmail } from '../http/postEmail';
+import { getRandomString } from '../utils/random';
 
 export let options: Options = {
-  vus: 2,
-  iterations: 2,
+  vus: 8,
+  iterations: 8,
   thresholds: {
     'http_req_failed': ['rate<0.02'],
-    'checks': ['rate>0.95'], 
+    'checks': ['rate>0.95'],
     'http_req_duration{get:false}': ['p(95)<2000'],
     'http_req_duration{get:true}': ['p(95)<1000'],
   }
 };
 
-export default () => {
+export function setup() {
+  const prefix = getRandomString();
+  return prefix;
+}
+
+export default (prefix: string) => {
   const user = getRandomUser()
   register(user)
   sleep(3)
@@ -35,12 +41,13 @@ export default () => {
   sleep(3)
   edit(token, user)
   sleep(2)
-  sendEmail(user.email)
+  sendEmail(user.email, prefix)
 };
 
 export function handleSummary(data: any) {
   return {
     "result.html": htmlReport(data),
+    'prefix.json': JSON.stringify({ prefix: data.setup_data }, null, 2),
     stdout: textSummary(data, { indent: " ", enableColors: true }),
   };
 }
