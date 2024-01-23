@@ -3,19 +3,21 @@ import http from "k6/http";
 import { baseUrl } from "../config/constants";
 import { jsonHeaders } from "../config/headers";
 import { User } from "../domain/register";
+import { LoginResponse } from "../domain/login";
 
 export const login = (user: User) => {
     const response = http.post(`${baseUrl}/users/signin`, getLoginBody(user), {
         headers: jsonHeaders,
     });
 
+    const loginResponse = response.json() as unknown as LoginResponse
+
     check(response, {
         'login status is 200': () => response.status === 200,
-        'token present in login response': () => tokenPresentInResponse(response)
+        'token present in login response': () => tokenPresentInResponse(loginResponse.token)
     });
 
-    // @ts-ignore
-    return response.json().token
+    return loginResponse.token
 }
 
 const getLoginBody = (user: User) => {
@@ -25,5 +27,4 @@ const getLoginBody = (user: User) => {
     })
 }
 
-// @ts-ignore
-const tokenPresentInResponse = (response) => typeof response.json().token !== "undefined";
+const tokenPresentInResponse = (token: string) => typeof token !== "undefined";

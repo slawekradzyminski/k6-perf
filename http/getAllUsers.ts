@@ -1,5 +1,5 @@
 import { check } from "k6";
-import http from "k6/http";
+import http, { RefinedResponse, ResponseType } from "k6/http";
 import { baseUrl } from "../config/constants";
 import { getAuthHeaders } from "../config/headers";
 import { UserResponse } from "../domain/user";
@@ -15,8 +15,7 @@ export const getAllUsers = (token: string) => {
     });
 }
 
-// @ts-ignore
-const hasAtLeastOneUser = (response) => {
-    const users = response.json() as UserResponse[]
-    return users.length > 0
+const hasAtLeastOneUser = (response: RefinedResponse<ResponseType | undefined>) => {
+    const data = response.json() as unknown as UserResponse[];
+    return data.length > 0;
 }
