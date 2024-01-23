@@ -12,10 +12,11 @@ import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporte
 import { textSummary } from "https://jslib.k6.io/k6-summary/0.0.1/index.js";
 import { sendEmail } from '../http/postEmail';
 import { getRandomString } from '../utils/random';
+import { repeatNTimes, runWithProbability } from '../utils/proportions';
 
 export let options: Options = {
-  vus: 8,
-  iterations: 8,
+  vus: 4,
+  iterations: 4,
   thresholds: {
     'http_req_failed': ['rate<0.02'],
     'checks': ['rate>0.95'],
@@ -35,13 +36,13 @@ export default (prefix: string) => {
   sleep(3)
   const token = login(user)
   sleep(1)
-  getAllUsers(token)
+  repeatNTimes(() => getAllUsers(token), 3.5)
   sleep(3)
-  getUserByUsername(token, user.username)
+  runWithProbability(() => getUserByUsername(token, user.username), 0.5)
   sleep(3)
-  edit(token, user)
+  runWithProbability(() => edit(token, user), 0.5)
   sleep(2)
-  sendEmail(user.email, prefix)
+  repeatNTimes(() => sendEmail(user.email, prefix), 2)
 };
 
 export function handleSummary(data: any) {
