@@ -17,11 +17,11 @@ import { deleteUser } from '../http/deleteUser';
 import { SharedArray } from 'k6/data';
 import { LoginRequest } from '../domain/login';
 
-const data = new SharedArray('json data', function () {
+const data = new SharedArray('json data', () => {
   return JSON.parse(open('./users.json'));
 });
 
-export let options: Options = {
+export const options: Options = {
   scenarios: {
     userJourney: {
       exec: 'userJourney',
@@ -58,7 +58,7 @@ export let options: Options = {
   }
 };
 
-export function setup() {
+export const setup = () => {
   const prefix = getRandomString();
   return prefix;
 }
@@ -87,7 +87,7 @@ export const userJourney = (prefix: string) => {
   sleep(2)
 };
 
-export function handleSummary(data: any) {
+export const handleSummary = (data: any) => {
   return {
     "result.html": htmlReport(data),
     'prefix.json': JSON.stringify({ prefix: data.setup_data }, null, 2),
