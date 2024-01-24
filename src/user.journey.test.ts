@@ -13,10 +13,14 @@ import { textSummary } from "https://jslib.k6.io/k6-summary/0.0.1/index.js";
 import { sendEmail } from '../http/postEmail';
 import { getRandomString } from '../utils/random';
 import { repeatNTimes, runWithProbability } from '../utils/proportions';
+import { deleteUser } from '../http/deleteUser';
 
 export let options: Options = {
-  vus: 6,
-  iterations: 30,
+  stages: [
+    { duration: '30s', target: 20 }, // ramp up od 0 do 20 uzytkowników
+    { duration: '1m', target: 20 }, // peak traffic 20 uzytkownikow
+    { duration: '30s', target: 0 }, // ramp down z 20 do 0 uzytkownikow
+  ],
   thresholds: {
     'http_req_failed': ['rate<0.02'],
     'checks': ['rate>0.95'],
@@ -43,6 +47,9 @@ export default (prefix: string) => {
   runWithProbability(() => edit(token, user), 0.5)
   sleep(2)
   repeatNTimes(() => sendEmail(user.email, prefix), 2)
+  sleep(2)
+  runWithProbability(() => deleteUser(token, user.username), 0.25)
+  sleep(2)
 };
 
 export function handleSummary(data: any) {

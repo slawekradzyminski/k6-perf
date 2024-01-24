@@ -1,12 +1,10 @@
-import { check, sleep } from 'k6';
+import { sleep } from 'k6';
 import { Options } from 'k6/options';
 import { login } from '../http/postSignin';
 import { getAllUsers } from '../http/getAllUsers';
-import http from 'k6/http';
-import { baseUrl } from '../config/constants';
-import { getAuthHeaders } from '../config/headers';
 import { getRandomUser } from '../generators/userGenerator';
 import { register } from '../http/postSignup';
+import { deleteUser } from '../http/deleteUser';
 
 export let options: Options = {
     vus: 1,
@@ -25,19 +23,7 @@ export default () => {
     getAllUsers(token)
         .map(user => user.username)
         .filter(username => username !== user.username)
-        .forEach(username => {
-        const deleteResponse = http.del(`${baseUrl}/users/${username}`, {}, {
-            headers: getAuthHeaders(token)
-        })
-        check(deleteResponse, {
-            'delete status is 204': () => deleteResponse.status === 204,
-        });
-    })
+        .forEach(username => deleteUser(token, username))
 
-    const deleteResponse = http.del(`${baseUrl}/users/${user.username}`, {}, {
-        headers: getAuthHeaders(token)
-    })
-    check(deleteResponse, {
-        'delete status is 204': () => deleteResponse.status === 204,
-    });
+    deleteUser(token, user.username)
 };
