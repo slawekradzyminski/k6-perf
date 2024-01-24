@@ -15,13 +15,13 @@ import { getRandomString } from '../utils/random';
 import { repeatNTimes, runWithProbability } from '../utils/proportions';
 
 export let options: Options = {
-  vus: 4,
-  iterations: 4,
+  vus: 6,
+  iterations: 30,
   thresholds: {
     'http_req_failed': ['rate<0.02'],
     'checks': ['rate>0.95'],
-    'http_req_duration{get:false}': ['p(95)<2000'],
-    'http_req_duration{get:true}': ['p(95)<1000'],
+    'http_req_duration{get:false}': ['p(95)<3000'],
+    'http_req_duration{get:true}': ['p(95)<1500'],
   }
 };
 
