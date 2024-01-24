@@ -15,11 +15,26 @@ import { getRandomString } from '../utils/random';
 import { repeatNTimes, runWithProbability } from '../utils/proportions';
 import { deleteUser } from '../http/deleteUser';
 
+const targetLoginRps = 1
+
 export let options: Options = {
-  stages: [
-    { duration: '30s', target: 150 }, // fast ramp-up to a high point
-    { duration: '3m', target: 0 }, // quick ramp-down to 0 users
-  ],
+  scenarios: {
+    contacts: {
+      executor: 'ramping-arrival-rate',
+      startRate: 0,
+      timeUnit: '1s',
+      preAllocatedVUs: 50,
+      maxVUs: 100,
+      stages: [
+        // ramp up od 0 do targetu
+        { target: targetLoginRps, duration: '2m' },
+        // peak traffic - trzymamy taki sam arrival rate na targecie
+        { target: targetLoginRps, duration: '6m' },
+        // ramp down do 0
+        { target: 0, duration: '2m' },
+      ],
+    },
+  },
   thresholds: {
     'http_req_failed': ['rate<0.02'],
     'checks': ['rate>0.95'],
@@ -35,19 +50,19 @@ export function setup() {
 
 export default (prefix: string) => {
   const user = getRandomUser()
-  register(user) // 2rps
+  register(user)
   sleep(3)
-  const token = login(user) // 2rps
+  const token = login(user)
   sleep(1)
-  repeatNTimes(() => getAllUsers(token), 3.5) // 6.5 rps
+  repeatNTimes(() => getAllUsers(token), 3.5)
   sleep(3)
-  runWithProbability(() => getUserByUsername(token, user.username), 0.5) // 1 rps
+  runWithProbability(() => getUserByUsername(token, user.username), 0.5)
   sleep(3)
-  runWithProbability(() => edit(token, user), 0.5) // 1 rps
+  runWithProbability(() => edit(token, user), 0.5)
   sleep(2)
-  repeatNTimes(() => sendEmail(user.email, prefix), 2) // 2 rps
+  repeatNTimes(() => sendEmail(user.email, prefix), 2)
   sleep(2)
-  runWithProbability(() => deleteUser(token, user.username), 0.25) // 5 rps
+  runWithProbability(() => deleteUser(token, user.username), 0.25)
   sleep(2)
 };
 
