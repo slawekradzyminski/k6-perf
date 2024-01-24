@@ -6,7 +6,11 @@ import { User } from "../domain/register";
 import { LoginResponse } from "../domain/login";
 
 export const login = (user: User) => {
-    const response = http.post(`${baseUrl}/users/signin`, getLoginBody(user), {
+    return loginAs(user.username, user.password)
+}
+
+export const loginAs = (username: string, password: string) => {
+    const response = http.post(`${baseUrl}/users/signin`, getLoginBody(username, password), {
         headers: jsonHeaders,
         tags: {
             get: "false",
@@ -23,11 +27,8 @@ export const login = (user: User) => {
     return loginResponse.token
 }
 
-const getLoginBody = (user: User) => {
-    return JSON.stringify({
-        username: user.username,
-        password: user.password
-    })
+const getLoginBody = (username: string, password: string) => {
+    return JSON.stringify({ username, password })
 }
 
 const tokenPresentInResponse = (token: string) => typeof token !== "undefined";
