@@ -16,16 +16,10 @@ import { repeatNTimes, runWithProbability } from '../utils/proportions';
 import { deleteUser } from '../http/deleteUser';
 
 export let options: Options = {
-  scenarios: {
-    default: {
-      executor: 'constant-arrival-rate',
-      rate: 2, // 2 rps czyli 2*60 = 120 rpm
-      timeUnit: '1s',
-      duration: '3m',
-      preAllocatedVUs: 200,
-      maxVUs: 200
-    },
-  },
+  stages: [
+    { duration: '30s', target: 150 }, // fast ramp-up to a high point
+    { duration: '3m', target: 0 }, // quick ramp-down to 0 users
+  ],
   thresholds: {
     'http_req_failed': ['rate<0.02'],
     'checks': ['rate>0.95'],
