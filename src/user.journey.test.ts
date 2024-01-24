@@ -2,7 +2,7 @@ import { sleep } from 'k6';
 import { Options } from 'k6/options';
 import { getRandomUser } from '../generators/userGenerator';
 import { register } from '../http/postSignup';
-import { login } from '../http/postSignin';
+import { login, loginAs } from '../http/postSignin';
 import { getAllUsers } from '../http/getAllUsers';
 import { getUserByUsername } from '../http/getSingleUser';
 import { edit } from '../http/putUser';
@@ -14,23 +14,38 @@ import { sendEmail } from '../http/postEmail';
 import { getRandomString } from '../utils/random';
 import { repeatNTimes, runWithProbability } from '../utils/proportions';
 import { deleteUser } from '../http/deleteUser';
+import { SharedArray } from 'k6/data';
+import { LoginRequest } from '../domain/login';
 
-const targetLoginRps = 1
+const data = new SharedArray('json data', function () {
+  return JSON.parse(open('./users.json'));
+});
 
 export let options: Options = {
   scenarios: {
-    contacts: {
+    userJourney: {
+      exec: 'userJourney',
       executor: 'ramping-arrival-rate',
       startRate: 0,
-      timeUnit: '1s',
+      timeUnit: '1m',
       preAllocatedVUs: 50,
       maxVUs: 100,
       stages: [
-        // ramp up od 0 do targetu
-        { target: targetLoginRps, duration: '2m' },
-        // peak traffic - trzymamy taki sam arrival rate na targecie
-        { target: targetLoginRps, duration: '6m' },
-        // ramp down do 0
+        { target: 60, duration: '2m' },
+        { target: 60, duration: '6m' },
+        { target: 0, duration: '2m' },
+      ],
+    },
+    loginJourney: {
+      exec: 'loginJourney',
+      executor: 'ramping-arrival-rate',
+      startRate: 0,
+      timeUnit: '1m',
+      preAllocatedVUs: 50,
+      maxVUs: 100,
+      stages: [
+        { target: 90, duration: '2m' },
+        { target: 90, duration: '6m' },
         { target: 0, duration: '2m' },
       ],
     },
@@ -48,7 +63,13 @@ export function setup() {
   return prefix;
 }
 
-export default (prefix: string) => {
+export const loginJourney = () => {
+  const randomCredentials = data[getRandomRowIndex()] as LoginRequest
+  loginAs(randomCredentials.username, randomCredentials.password)
+  sleep(2)
+};
+
+export const userJourney = (prefix: string) => {
   const user = getRandomUser()
   register(user)
   sleep(3)
@@ -73,3 +94,5 @@ export function handleSummary(data: any) {
     stdout: textSummary(data, { indent: " ", enableColors: true }),
   };
 }
+
+const getRandomRowIndex = () => Math.floor(Math.random() * data.length)
