@@ -19,4 +19,7 @@ export const login = (username: string, password: string) => {
     check(response, {
         'login successful': (r) => r.status === 200,
     });
+    // @ts-ignore
+    const responseBody = JSON.parse(response.body);
+    return responseBody.token; 
 };
