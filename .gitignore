@@ -3,3 +3,4 @@ yarn-error.log
 dist
 result.html
 .DS_Store
+src/slaweks-example-test.ts
