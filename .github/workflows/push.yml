@@ -15,14 +15,15 @@ jobs:
         node-version: [18, 20]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
-      - run: npm run bundle
+      - name: Setup K6
+        uses: grafana/setup-k6-action@v1
       - name: Run local k6 test
-        uses: grafana/k6-action@v0.2.0
+        uses: grafana/run-k6-action@v1
         with:
-          filename: dist/get-200-status-test.js
+          path: dist/get-200-status-test.js
