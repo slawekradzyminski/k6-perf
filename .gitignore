@@ -4,3 +4,5 @@ dist
 result.html
 .DS_Store
 src/slaweks-example-test.ts
+output.json
+formatted_logs.json
