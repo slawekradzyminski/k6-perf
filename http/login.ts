@@ -13,7 +13,7 @@ export const login = (username: string, password: string) => {
   const res = http.post(url, body, params);
 
   check(res, {
-    "status is 200": (r) => r.status === 200,
-    "has valid token": (r) => r.json("token") !== undefined,
+    "login response status is 200": (r) => r.status === 200,
+    "login response has valid token": (r) => r.json("token") !== undefined,
   });
 };

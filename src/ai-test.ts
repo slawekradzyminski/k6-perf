@@ -7,6 +7,11 @@ import { register } from "../http/register";
 export const options: Options = {
   vus: 1,
   iterations: 2,
+  thresholds: {
+    http_req_duration: ["p(95)<1000"],
+    checks: [{ threshold: "rate>0.99", abortOnFail: true }],
+    http_req_failed: ["rate<0.01"],
+  },
 };
 
 export default () => {

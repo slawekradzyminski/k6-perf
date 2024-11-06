@@ -11,6 +11,6 @@ export const register = (user: User) => {
   const res = http.post(url, body, params);
 
   check(res, {
-    "status is 201": (r) => r.status === 201
+    "register response status is 201": (r) => r.status === 201
   });
 };
