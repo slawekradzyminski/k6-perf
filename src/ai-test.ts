@@ -8,9 +8,23 @@ import { editUser } from "../http/editUser";
 // @ts-ignore
 import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
 
+const targetLoginRps = 1;
+
 export const options: Options = {
-  vus: 10,
-  iterations: 20,
+  scenarios: {
+    userJourney: {
+      executor: "ramping-arrival-rate",
+      startRate: 0,
+      timeUnit: "1s",
+      preAllocatedVUs: 50,
+      maxVUs: 100,
+      stages: [
+        { target: targetLoginRps, duration: "2m" }, // ramp up  
+        { target: targetLoginRps, duration: "6m" }, // peak
+        { target: 0, duration: "2m" }, // ramp down
+      ],
+    },
+  },
   thresholds: {
     http_req_duration: ["p(95)<1000"],
     checks: [{ threshold: "rate>0.99", abortOnFail: true }],
@@ -35,6 +49,7 @@ const repeat = (times: number, fn: () => void) => {
   }
 };
 
+// chcemy obsługiwać 1rps (60rpm)
 export default () => {
   const user = getRandomUser();
   register(user); // 1x
