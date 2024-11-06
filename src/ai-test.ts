@@ -9,8 +9,8 @@ import { editUser } from "../http/editUser";
 import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
 
 export const options: Options = {
-  vus: 1,
-  iterations: 2,
+  vus: 10,
+  iterations: 20,
   thresholds: {
     http_req_duration: ["p(95)<1000"],
     checks: [{ threshold: "rate>0.99", abortOnFail: true }],
@@ -25,7 +25,12 @@ export function handleSummary(data: any) {
 }
 
 const repeat = (times: number, fn: () => void) => {
-  for (let i = 0; i < times; i++) {
+  const wholePart = Math.floor(times);
+  const fractionalPart = times % 1;
+  for (let i = 0; i < wholePart; i++) {
+    fn();
+  }
+  if (Math.random() < fractionalPart) {
     fn();
   }
 };
@@ -42,5 +47,7 @@ export default () => {
   });
 
   sleep(3);
-  editUser(user.username, token as string); // 0.5
+  repeat(0.5, () => {
+    editUser(user.username, token as string);
+  });
 };
