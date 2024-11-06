@@ -3,6 +3,7 @@ import { login } from "../http/login";
 import { sleep } from "k6";
 import { getRandomUser } from "../generator/userGenerator";
 import { register } from "../http/register";
+import { getUsers } from "../http/getUsers";
 
 export const options: Options = {
   vus: 1,
@@ -18,5 +19,7 @@ export default () => {
   const user = getRandomUser();
   register(user);
   sleep(3);
-  login(user.username, user.password);
+  const token = login(user.username, user.password);
+  sleep(1);
+  getUsers(token as string);
 };

@@ -16,4 +16,6 @@ export const login = (username: string, password: string) => {
     "login response status is 200": (r) => r.status === 200,
     "login response has valid token": (r) => r.json("token") !== undefined,
   });
+
+  return res.json("token");
 };
