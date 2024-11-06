@@ -3,3 +3,11 @@ export const params = {
     "Content-Type": "application/json",
   },
 };
+
+export const paramsWithAuth = (token: string) => ({
+  ...params,
+  headers: {
+    ...params.headers,
+    'Authorization': `Bearer ${token}`
+  }
+});
