@@ -6,7 +6,7 @@ import { register } from "../http/register";
 
 export const options: Options = {
   vus: 1,
-  iterations: 1,
+  iterations: 2,
 };
 
 export default () => {
