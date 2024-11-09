@@ -1,14 +1,8 @@
 pipeline {
-    agent any
+    agent none
 
     triggers {
         githubPush()
-        
-        // Optional: Add scheduled builds (e.g., nightly)
-        // cron('H 0 * * *')  // Run once per day
-        
-        // Optional: Poll SCM periodically
-        // pollSCM('H */4 * * *')  // Poll every 4 hours
     }
     
     options {
@@ -21,60 +15,35 @@ pipeline {
                 axes {
                     axis {
                         name 'NODE_VERSION'
-                        values '18.20.4', '20.18.0'
+                        values '18', '20'
                     }
                 }
                 
                 stages {
-                    stage('Setup') {
+                    stage('Build') {
+                        agent {
+                            docker {
+                                image "node:${NODE_VERSION}-alpine"
+                                args '-u root'
+                            }
+                        }
                         steps {
-                            // Clean workspace
                             cleanWs()
-                            // Checkout code
                             checkout scm
                             
-                            // Install Node.js
-                            sh """
-                                curl -fsSL https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz | tar xz -C /tmp
-                                export PATH="/tmp/node-v${NODE_VERSION}-linux-x64/bin:\$PATH"
-                                node --version
-                                npm --version
-                                echo "export PATH=/tmp/node-v${NODE_VERSION}.0.0-linux-x64/bin:\$PATH" >> ~/.bashrc
-                                source ~/.bashrc
-                            """
-                        }
-                    }
-
-                    stage('Install Dependencies') {
-                        steps {
-                            sh """
-                                source ~/.bashrc
-                                npm ci
-                            """
-                        }
-                    }
-
-                    stage('Bundle') {
-                        steps {
-                            sh """
-                                source ~/.bashrc
-                                npm run bundle
-                            """
+                            sh 'npm ci'
+                            sh 'npm run bundle'
                         }
                     }
 
                     stage('K6 Test') {
+                        agent {
+                            docker {
+                                image 'grafana/k6:latest'
+                                args '-u root'
+                            }
+                        }
                         steps {
-                            // Install k6
-                            sh '''
-                                sudo gpg -k
-                                sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
-                                echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
-                                sudo apt-get update
-                                sudo apt-get install k6
-                            '''
-                            
-                            // Run k6 test
                             sh 'k6 run dist/get-200-status-test.js'
                         }
                     }
