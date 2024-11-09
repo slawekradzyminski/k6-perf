@@ -21,7 +21,7 @@ pipeline {
                 axes {
                     axis {
                         name 'NODE_VERSION'
-                        values '18', '20'
+                        values '18.20.4', '20.18.0'
                     }
                 }
                 
@@ -35,23 +35,31 @@ pipeline {
                             
                             // Install Node.js
                             sh """
-                                curl -fsSL https://nodejs.org/dist/v${NODE_VERSION}.0.0/node-v${NODE_VERSION}.0.0-linux-x64.tar.gz | tar xz -C /tmp
-                                export PATH="/tmp/node-v${NODE_VERSION}.0.0-linux-x64/bin:\$PATH"
+                                curl -fsSL https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz | tar xz -C /tmp
+                                export PATH="/tmp/node-v${NODE_VERSION}-linux-x64/bin:\$PATH"
                                 node --version
                                 npm --version
+                                echo "export PATH=/tmp/node-v${NODE_VERSION}.0.0-linux-x64/bin:\$PATH" >> ~/.bashrc
+                                source ~/.bashrc
                             """
                         }
                     }
 
                     stage('Install Dependencies') {
                         steps {
-                            sh 'npm ci'
+                            sh """
+                                source ~/.bashrc
+                                npm ci
+                            """
                         }
                     }
 
                     stage('Bundle') {
                         steps {
-                            sh 'npm run bundle'
+                            sh """
+                                source ~/.bashrc
+                                npm run bundle
+                            """
                         }
                     }
 
