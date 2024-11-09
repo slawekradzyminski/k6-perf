@@ -1,5 +1,5 @@
 pipeline {
-    agent none
+    agent any
 
     triggers {
         githubPush()
@@ -19,29 +19,24 @@ pipeline {
                     }
                 }
                 
-                agent any
-                
                 stages {
                     stage('Build') {
                         steps {
-                            sh 'mkdir -p dist && chmod 777 dist'
-                            
                             script {
+                                sh 'mkdir -p dist'
+                                
                                 docker.image("node:${NODE_VERSION}-alpine").inside('-u root') {
-                                    sh 'npm ci'
-                                    sh 'npm run bundle'
+                                    sh '''
+                                        npm ci
+                                        npm run bundle
+                                    '''
                                 }
                             }
-                            
-                            sh 'chmod 644 dist/get-200-status-test.js'
-                            stash includes: 'dist/get-200-status-test.js', name: 'k6-test'
                         }
                     }
 
                     stage('K6 Test') {
                         steps {
-                            unstash 'k6-test'
-                            
                             script {
                                 docker.image('grafana/k6:latest').inside('--entrypoint=""') {
                                     sh '''
