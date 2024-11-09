@@ -15,7 +15,7 @@ pipeline {
                 axes {
                     axis {
                         name 'NODE_VERSION'
-                        values '20'
+                        values '18', '20'
                     }
                 }
                 
@@ -25,6 +25,7 @@ pipeline {
                             docker {
                                 image "node:${NODE_VERSION}-alpine"
                                 args '-u root'
+                                reuseNode true
                             }
                         }
                         steps {
@@ -33,6 +34,7 @@ pipeline {
                             
                             sh 'npm ci'
                             sh 'npm run bundle'
+                            stash includes: 'dist/get-200-status-test.js', name: 'k6-test'
                         }
                     }
 
@@ -40,11 +42,16 @@ pipeline {
                         agent {
                             docker {
                                 image 'grafana/k6:latest'
-                                args '-u root'
+                                args '--entrypoint=""'
+                                reuseNode true
                             }
                         }
                         steps {
-                            sh 'k6 run dist/get-200-status-test.js'
+                            unstash 'k6-test'
+                            sh '''
+                                k6 version
+                                k6 run dist/get-200-status-test.js
+                            '''
                         }
                     }
                 }
