@@ -19,39 +19,37 @@ pipeline {
                     }
                 }
                 
+                agent any
+                
                 stages {
                     stage('Build') {
-                        agent {
-                            docker {
-                                image "node:${NODE_VERSION}-alpine"
-                                args '-u root'
-                                reuseNode true
-                            }
-                        }
                         steps {
-                            cleanWs()
-                            checkout scm
+                            sh 'mkdir -p dist && chmod 777 dist'
                             
-                            sh 'npm ci'
-                            sh 'npm run bundle'
+                            script {
+                                docker.image("node:${NODE_VERSION}-alpine").inside('-u root') {
+                                    sh 'npm ci'
+                                    sh 'npm run bundle'
+                                }
+                            }
+                            
+                            sh 'chmod 644 dist/get-200-status-test.js'
                             stash includes: 'dist/get-200-status-test.js', name: 'k6-test'
                         }
                     }
 
                     stage('K6 Test') {
-                        agent {
-                            docker {
-                                image 'grafana/k6:latest'
-                                args '--entrypoint=""'
-                                reuseNode true
-                            }
-                        }
                         steps {
                             unstash 'k6-test'
-                            sh '''
-                                k6 version
-                                k6 run dist/get-200-status-test.js
-                            '''
+                            
+                            script {
+                                docker.image('grafana/k6:latest').inside('--entrypoint=""') {
+                                    sh '''
+                                        k6 version
+                                        k6 run dist/get-200-status-test.js
+                                    '''
+                                }
+                            }
                         }
                     }
                 }
