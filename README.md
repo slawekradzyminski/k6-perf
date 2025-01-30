@@ -60,6 +60,20 @@ k6 run dist/get-200-status-test.js
 docker run --rm -i -v $(pwd)/dist:/dist -w /dist grafana/k6 run get-200-status-test.js
 ```
 
+## Running with Docker
+
+You can run the performance tests using Docker Compose, which handles all the dependencies and building automatically:
+
+```bash
+docker-compose up --build
+```
+
+This will:
+1. Build the project using Node.js (including `npm install` and bundling)
+2. Run the k6 performance tests
+
+For faster builds, if you have already run `npm install` locally, the build process will reuse your local `node_modules` directory.
+
 ## Transpiling and Bundling
 
 By default, k6 does not support TypeScript, but it supports ES modules and ES5.1 code with CommonJS modules. To use TypeScript, we have to set up a bundler that converts TypeScript to any of these formats. 

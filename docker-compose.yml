@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  k6:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: k6-runner
+    volumes:
+      - ./dist:/app/dist
+    command: ["run", "/app/dist/get-200-status-test.js"]
