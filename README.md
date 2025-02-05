@@ -51,13 +51,13 @@ This command creates the final test files to the `./dist` folder.
 Once that is done, we can run our script the same way we usually do, for instance:
 
 ```bash
-k6 run dist/get-200-status-test.js
+k6 run dist/shopperjourney.js
 ```
 
 ## Running the test inside Docker
 
 ```bash
-docker run --rm -i -v $(pwd)/dist:/dist -w /dist grafana/k6 run get-200-status-test.js
+docker run --rm -i --network awesome-localstack_my-private-ntwk -e BACKEND_URL=http://backend:4001 -v $(pwd)/dist:/dist -w /dist grafana/k6 run shopperjourney.js
 ```
 
 ## Running with Docker
