@@ -3,12 +3,19 @@ import { Options } from 'k6/options';
 import { login } from '../http/postSignIn';
 import { getRandomUser } from '../generators/userGenerator';
 import { register } from '../http/postSignUp';
+import { getMe } from '../http/getMe';
 
 export let options:Options = {
   vus: 1,
   iterations: 1,
   thresholds: {
-    checks: ['rate == 1'],
+    checks: [
+      {
+        threshold: 'rate == 1',
+        abortOnFail: false,
+        delayAbortEval: '4s'
+      },
+    ],
   },
 };
 
@@ -19,4 +26,5 @@ export default () => {
   sleep(3)
   const token = login(user.username, user.password)
   sleep(1);
+  getMe(token)
 };
