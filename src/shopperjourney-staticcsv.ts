@@ -3,14 +3,15 @@ import { Options } from 'k6/options';
 import { login } from '../http/postSignIn';
 import { SharedArray } from 'k6/data';
 import { LoginRequest } from '../types/loginTypes';
+import Papa from 'papaparse';
 
 const data = new SharedArray('users', function () {
-  return JSON.parse(open('./users.json')).users;
+  return Papa.parse(open('./users.csv'), { header: true }).data;
 });
 
 export let options:Options = {
-  vus: 1,
-  iterations: 1,
+  vus: 5,
+  iterations: 5,
   thresholds: {
     checks: ['rate == 1'],
   },
@@ -18,6 +19,7 @@ export let options:Options = {
 
 export default () => {
   const user = data[Math.floor(Math.random() * data.length)] as LoginRequest;
+  console.log(user)
   login(user.username, user.password)
   sleep(1);
 };
