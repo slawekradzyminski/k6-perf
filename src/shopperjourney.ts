@@ -4,6 +4,7 @@ import { login } from '../http/postSignIn';
 import { getRandomUser } from '../generators/userGenerator';
 import { register } from '../http/postSignUp';
 import { getMe } from '../http/getMe';
+import { getProducts } from '../http/getProducts';
 
 export let options:Options = {
   vus: 1,
@@ -27,4 +28,5 @@ export default () => {
   const token = login(user.username, user.password)
   sleep(1);
   getMe(token)
+  getProducts(token)
 };
