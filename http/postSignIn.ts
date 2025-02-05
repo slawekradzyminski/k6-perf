@@ -11,7 +11,7 @@ const loginRequest = JSON.stringify({
 
   const res = http.post(`${backendUrl}/users/signin`, loginRequest, params);
   check(res, {
-    'status is 200': () => res.status === 200,
+    'login status is 200': () => res.status === 200,
   });
 
 }
