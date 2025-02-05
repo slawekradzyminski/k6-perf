@@ -19,7 +19,6 @@ export let options:Options = {
 
 export default () => {
   const user = data[Math.floor(Math.random() * data.length)] as LoginRequest;
-  console.log(user)
   login(user.username, user.password)
   sleep(1);
 };
