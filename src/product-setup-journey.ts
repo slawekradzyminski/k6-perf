@@ -27,9 +27,8 @@ export let options:Options = {
 export default () => {
   const token = login('admin', 'admin')
   sleep(1);
-  for (let i = 0; i < data.length; i++) {
-      const product = data[i] as CreateProductRequest;
-      createProduct(product, token)
-      sleep(1)
-  }
+  for (const product of data) {
+    createProduct(product as CreateProductRequest, token);
+    sleep(1);
+}
 };
