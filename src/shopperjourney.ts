@@ -11,10 +11,11 @@ import { addProductToCart } from '../http/addProductToCart';
 import { getCart } from '../http/getCart';
 import { repeat, runWithProbability } from '../util/requestUtil';
 import { randomIntBetween } from '../util/randomUtil';
+import { getProductById } from '../http/getProductById';
 
 export let options:Options = {
-  vus: 2,
-  iterations: 2,
+  vus: 1,
+  iterations: 1,
   thresholds: {
     checks: [
       {
@@ -44,5 +45,7 @@ const getProductsAndAddToCart = (token: string) => {
   const products = getProducts(token)
   sleep(randomIntBetween(1, 4))
   const product = getRandomProduct(products)
-  addProductToCart(product, token) 
+  addProductToCart(product, token)
+  sleep(4)
+  getProductById(product.id, token)
 }
