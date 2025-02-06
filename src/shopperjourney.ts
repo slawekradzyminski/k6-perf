@@ -5,6 +5,10 @@ import { getRandomUser } from '../generators/userGenerator';
 import { register } from '../http/postSignUp';
 import { getMe } from '../http/getMe';
 import { getProducts } from '../http/getProducts';
+import { getUsers } from '../http/getUsers';
+import { getRandomProduct } from '../util/randomProductUtil';
+import { addProductToCart } from '../http/addProductToCart';
+import { getCart } from '../http/getCart';
 
 export let options:Options = {
   vus: 1,
@@ -28,5 +32,16 @@ export default () => {
   const token = login(user.username, user.password)
   sleep(1);
   getMe(token)
-  getProducts(token)
+  sleep(2)
+  const products = getProducts(token)
+  sleep(2)
+  getUsers(token)
+  sleep(2)
+  const product1 = getRandomProduct(products)
+  addProductToCart(product1, token)
+  sleep(2)
+  const product2 = getRandomProduct(products)
+  addProductToCart(product2, token)
+  sleep(2)
+  getCart(token)
 };

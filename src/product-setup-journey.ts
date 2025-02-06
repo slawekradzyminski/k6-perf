@@ -10,7 +10,7 @@ const data = new SharedArray('products', function () {
   return Papa.parse(open('./products.csv'), { header: true }).data;
 });
 
-export let options:Options = {
+export let options: Options = {
   vus: 1,
   iterations: 1,
   thresholds: {
@@ -30,5 +30,5 @@ export default () => {
   for (const product of data) {
     createProduct(product as CreateProductRequest, token);
     sleep(1);
-}
+  }
 };
