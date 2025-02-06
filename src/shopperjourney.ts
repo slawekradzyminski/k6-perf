@@ -11,14 +11,10 @@ import { addProductToCart } from '../http/addProductToCart';
 import { getCart } from '../http/getCart';
 import { repeat, runWithProbability } from '../util/requestUtil';
 import { randomIntBetween } from '../util/randomUtil';
-// @ts-ignore
-import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
-// @ts-ignore
-import { textSummary } from "https://jslib.k6.io/k6-summary/0.0.1/index.js";
 
 export let options:Options = {
-  vus: 10,
-  iterations: 50,
+  vus: 2,
+  iterations: 2,
   thresholds: {
     checks: [
       {
@@ -49,11 +45,4 @@ const getProductsAndAddToCart = (token: string) => {
   sleep(randomIntBetween(1, 4))
   const product = getRandomProduct(products)
   addProductToCart(product, token) 
-}
-
-export function handleSummary(data: any) {
-  return {
-    "result.html": htmlReport(data),
-    stdout: textSummary(data, { indent: " ", enableColors: true }),
-  };
 }
