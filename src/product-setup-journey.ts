@@ -1,6 +1,14 @@
 import { sleep } from 'k6';
 import { Options } from 'k6/options';
 import { login } from '../http/postSignIn';
+import Papa from 'papaparse';
+import { SharedArray } from 'k6/data';
+import { CreateProductRequest } from '../types/productTypes';
+import { createProduct } from '../http/postProduct';
+
+const data = new SharedArray('products', function () {
+  return Papa.parse(open('./products.csv'), { header: true }).data;
+});
 
 export let options:Options = {
   vus: 1,
@@ -19,4 +27,9 @@ export let options:Options = {
 export default () => {
   const token = login('admin', 'admin')
   sleep(1);
+  for (let i = 0; i < data.length; i++) {
+      const product = data[i] as CreateProductRequest;
+      createProduct(product, token)
+      sleep(1)
+  }
 };
