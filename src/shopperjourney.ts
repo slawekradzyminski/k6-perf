@@ -11,8 +11,8 @@ import { addProductToCart } from '../http/addProductToCart';
 import { getCart } from '../http/getCart';
 
 export let options:Options = {
-  vus: 1,
-  iterations: 1,
+  vus: 10,
+  iterations: 20,
   thresholds: {
     checks: [
       {
@@ -22,6 +22,7 @@ export let options:Options = {
       },
     ],
   },
+  summaryTrendStats: ["min", "avg", "med", "max", "p(95)", "p(99)"],
 };
 
 export default () => {

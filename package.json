@@ -28,7 +28,7 @@
   "scripts": {
     "start": "cross-env NODE_OPTIONS='--openssl-legacy-provider' webpack",
     "bundle": "cross-env NODE_OPTIONS='--openssl-legacy-provider' webpack",
-    "test": "cross-env NODE_OPTIONS='--openssl-legacy-provider' webpack && k6 run dist/shopperjourney.js",
+    "test": "cross-env NODE_OPTIONS='--openssl-legacy-provider' webpack && K6_WEB_DASHBOARD=true K6_WEB_DASHBOARD_EXPORT=html-report.html k6 run dist/shopperjourney.js",
     "docker": "cross-env NODE_OPTIONS='--openssl-legacy-provider' webpack && docker run --rm -i --network awesome-localstack_my-private-ntwk -e BACKEND_URL=http://backend:4001 -v $(pwd)/dist:/dist -w /dist grafana/k6 run shopperjourney.js",
     "docker-windows": "cross-env NODE_OPTIONS='--openssl-legacy-provider' webpack && docker run --rm -i --network awesome-localstack_my-private-ntwk -e BACKEND_URL=http://backend:4001 -v %cd%\\dist:/dist -w /dist grafana/k6 run shopperjourney.js"
   }
