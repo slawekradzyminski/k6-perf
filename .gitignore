@@ -6,3 +6,4 @@ result.html
 src/slaweks-example-test.ts
 .idea
 html-report.html
+assets/loadTestUsers.csv
