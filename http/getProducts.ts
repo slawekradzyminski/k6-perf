@@ -12,5 +12,5 @@ export const getProducts = (token: string): Product[] => {
     'get products returned at least 5 users': () => res.json().length > 5
   });
 
-  return res.json() as unknown as Product[];
+  return res.json() as any;
 }
