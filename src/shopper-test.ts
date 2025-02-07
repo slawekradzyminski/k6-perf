@@ -14,9 +14,9 @@ export let options:Options = {
       preAllocatedVUs: 50,
       maxVUs: 100,
       stages: [
+        { target: targetLoginRps, duration: '1m' }, 
         { target: targetLoginRps, duration: '2m' }, 
-        { target: targetLoginRps, duration: '6m' }, 
-        { target: 0, duration: '2m' }, 
+        { target: 0, duration: '1m' }, 
       ],
     },
     registerTraffic: {
@@ -27,6 +27,8 @@ export let options:Options = {
     },
   },
   thresholds: {
+    'http_req_duration{checkDuration:true}': ['p(95)<500'], 
+    'http_req_duration': ['p(95)<2000'], 
     checks: [
       {
         threshold: 'rate == 1',

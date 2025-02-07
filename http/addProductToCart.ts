@@ -16,7 +16,7 @@ export const addProductToCart = (product: Product, token: string) => {
     }
     const body = JSON.stringify(addCartRequest)
 
-    const res = http.post(`${backendUrl}/api/cart/items`, body, authParams(token));
+    const res = http.post(`${backendUrl}/api/cart/items`, body, authParams(token, { checkDuration: 'true' }));
     check(res, {
         'add to cart status is 200': () => res.status === 200,
     });

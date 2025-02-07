@@ -10,7 +10,8 @@ const defaultHeaders = {
     headers: defaultHeaders
   };
   
-  export const authParams = (token: string) => ({
+  export const authParams = (token: string, tags: { [name: string]: string; } = {}) => ({
+    tags: tags,
     headers: {
       ...defaultHeaders,
       'Authorization': `Bearer ${token}`
