@@ -13,15 +13,31 @@ import { repeat, runWithProbability } from '../util/requestUtil';
 import { randomIntBetween } from '../util/randomUtil';
 import { getProductById } from '../http/getProductById';
 
+const targetLoginRpm = 60 // dane z NR
+const secondsInMinute = 60
+const targetLoginRps = targetLoginRpm / secondsInMinute
+// rps = rpm / 60
+
 export let options:Options = {
-  vus: 1,
-  iterations: 1,
+  scenarios: {
+    contacts: {
+      executor: 'ramping-arrival-rate',
+      startRate: 0,
+      timeUnit: '1s', // jezeli uzywamy rps to dajemy 1s, jezeli uzywamy rpm to dajemy 1m
+      preAllocatedVUs: 50,
+      maxVUs: 100,
+      stages: [
+        { target: targetLoginRps, duration: '2m' }, // ramp up
+        { target: targetLoginRps, duration: '6m' }, // peak traffic
+        { target: 0, duration: '2m' }, // ramp down
+      ],
+    },
+  },
   thresholds: {
     checks: [
       {
         threshold: 'rate == 1',
         abortOnFail: false,
-        delayAbortEval: '4s'
       },
     ],
   },
