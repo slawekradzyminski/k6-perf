@@ -13,9 +13,9 @@ import { repeat, runWithProbability } from '../util/requestUtil';
 import { randomIntBetween } from '../util/randomUtil';
 import { getProductById } from '../http/getProductById';
 
-const targetLoginRpm = 60 // dane z NR
-const secondsInMinute = 60
-const targetLoginRps = targetLoginRpm / secondsInMinute
+// const targetLoginRpm = 60 // dane z NR
+// const secondsInMinute = 60
+const targetLoginRps = 1 // ta wartość to cel naszego testu (wymaganie jakie chcemy spełnić)
 // rps = rpm / 60
 
 export let options:Options = {
@@ -27,9 +27,9 @@ export let options:Options = {
       preAllocatedVUs: 50,
       maxVUs: 100,
       stages: [
-        { target: targetLoginRps, duration: '2m' }, // ramp up
-        { target: targetLoginRps, duration: '6m' }, // peak traffic
-        { target: 0, duration: '2m' }, // ramp down
+        { target: targetLoginRps, duration: '2m' }, // ramp up (zaczynamy od startRate)
+        { target: targetLoginRps, duration: '6m' }, // peak traffic (zaczynamy od tego co było targetem poprzedniej fazy)
+        { target: 0, duration: '2m' }, // ramp down (zaczynamy od tego co było targetem poprzedniej fazy)
       ],
     },
   },
