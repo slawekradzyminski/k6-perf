@@ -15,6 +15,8 @@ import Papa from 'papaparse';
 import { scenario } from 'k6/execution';
 import { User } from '../types/registerTypes';
 import { deleteCart } from '../http/deleteCart';
+import { getRandomUser } from '../generators/userGenerator';
+import { register } from '../http/postSignUp';
 
 const targetLoginRps = 1 
 
@@ -24,9 +26,10 @@ const usersData = new SharedArray('users', function () {
 
 export let options:Options = {
   scenarios: {
-    contacts: {
+    loginJourney: {
       executor: 'ramping-arrival-rate',
       startRate: 0,
+      exec: 'loginJourney',
       timeUnit: '1s', 
       preAllocatedVUs: 50,
       maxVUs: 100,
@@ -35,6 +38,12 @@ export let options:Options = {
         { target: targetLoginRps, duration: '6m' }, 
         { target: 0, duration: '2m' }, 
       ],
+    },
+    registerJourney: {
+      executor: 'constant-vus',
+      exec: 'registerJourney',
+      vus: 2,
+      duration: '2m',
     },
   },
   thresholds: {
@@ -48,9 +57,8 @@ export let options:Options = {
   summaryTrendStats: ["min", "avg", "med", "max", "p(95)", "p(99)"],
 };
 
-export default () => {
+export const loginJourney = () => {
   const user = usersData[getUserRow()] as User
-  console.log(`We are in iteration ${scenario.iterationInInstance}. Using user ${user.username}`)
 
   const token = login(user.username, user.password)
   sleep(1)
@@ -60,6 +68,12 @@ export default () => {
   repeat(() => getProductsAndAddToCart(token), 2)
 
   repeat(() => getCart(token), 3)
+};
+
+export const registerJourney = () => {
+  const user = getRandomUser()
+  register(user)
+  sleep(randomIntBetween(1, 10))
 };
 
 const getProductsAndAddToCart = (token: string) => {
